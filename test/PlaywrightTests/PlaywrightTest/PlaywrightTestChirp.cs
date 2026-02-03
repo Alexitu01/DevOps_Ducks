@@ -37,7 +37,7 @@ public class Tests : PageTest
     {
         await Page.GotoAsync("https://localhost:7102/");
 
-        await Expect(Page).ToHaveTitleAsync(new Regex("Chirp!"));
+        await Expect(Page).ToHaveTitleAsync(new Regex("ITUMiniTwit!"));
 
         var login = Page.Locator("text=login");
 
@@ -51,7 +51,7 @@ public class Tests : PageTest
     {
         await Page.GotoAsync("https://localhost:7102/");
 
-        await Expect(Page).ToHaveTitleAsync(new Regex("Chirp!"));
+        await Expect(Page).ToHaveTitleAsync(new Regex("ITUMiniTwit!"));
         
         var register = Page.Locator("text=register");
         
@@ -65,7 +65,7 @@ public class Tests : PageTest
     {
         await Page.GotoAsync("https://localhost:7102/");
         
-        await Expect(Page).ToHaveTitleAsync(new Regex("Chirp!"));
+        await Expect(Page).ToHaveTitleAsync(new Regex("ITUMiniTwit!"));
         
         var register = Page.Locator("text=register");
         
@@ -86,7 +86,7 @@ public class Tests : PageTest
     {
         await Page.GotoAsync("https://localhost:7102/");
         
-        await Expect(Page).ToHaveTitleAsync(new Regex("Chirp!"));
+        await Expect(Page).ToHaveTitleAsync(new Regex("ITUMiniTwit!"));
         
         var login = Page.Locator("text=login");
 

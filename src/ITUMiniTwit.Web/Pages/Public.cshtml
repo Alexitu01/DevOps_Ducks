@@ -1,0 +1,100 @@
+@page "/"
+@model ITUMiniTwit.Web.Pages.PublicModel
+@{
+    ViewData["Title"] = "ITUMiniTwit!";
+    Layout = "Shared/_Layout";
+
+    var pageParam = Request.Query["page"].ToString();
+    var currentPage = int.TryParse(pageParam, out var parsedPage) && parsedPage > 0
+        ? parsedPage
+        : 1;
+
+    var prevPage = currentPage > 1 ? currentPage - 1 : 1;
+    var nextPage = currentPage + 1;
+}
+
+
+    <h2> Public Timeline </h2>
+    <partial name="_LoginPartial" />
+
+    @if (User.Identity?.IsAuthenticated ?? false)
+    {
+        <div class="cheepbox">
+            <h3>What's on your mind @User.Identity!.Name?</h3>
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="text" asp-for="Text" maxlength="160" />
+                <span asp-validation-for="Text" class="text-danger"></span>
+                <button type="submit">Share</button>
+            </form>
+        </div>
+    }
+    
+    @if (Model.Cheeps.Any())
+    {
+        <ul id="messagelist" class="cheeps">
+            @foreach (var cheep in Model.Cheeps)
+            {
+                <li>
+                    <div class="cheep-header">
+                        <span class="cheep-text">
+                            <strong>
+                                <a asp-page="/UserTimeline" asp-route-author="@cheep.Author">@cheep.Author</a>
+                            </strong>
+                            @cheep.Text
+                            <small>&mdash; @cheep.TimeStamp</small>
+                        </span>
+                        @* FOLLOW/UNFOLLOW BLOCK *@
+                        @if (User.Identity?.IsAuthenticated ?? false)
+                        {
+                            // Users cannot follow themselves
+                            if (!string.Equals(User.Identity!.Name, cheep.Author, StringComparison.OrdinalIgnoreCase))
+                            {
+                                // Following is List<Author>; use a.UserName
+                                var isFollowing = Model.Following.Any(a => a.UserName == cheep.Author);
+
+                                if (!isFollowing)
+                                {
+                                    <form method="post" asp-page-handler="Follow" style="display:inline;">
+                                        <input type="hidden" name="authorToFollow" value="@cheep.Author"/>
+                                        <input type="hidden" name="page" value="@currentPage"/>
+                                        <button type="submit">Follow</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form method="post" asp-page-handler="Unfollow" style="display:inline;">
+                                        <input type="hidden" name="authorToUnfollow" value="@cheep.Author"/>
+                                        <input type="hidden" name="page" value="@currentPage"/>
+                                        <button type="submit">Unfollow</button>
+                                    </form>
+                                }
+                            }
+                            
+                            <form method="post" asp-page-handler="Like" style="display:inline; margin-left:4px;">
+                                <input type="hidden" name="cheepId" value="@cheep.CheepId" />
+                                <input type="hidden" name="page" value="@currentPage" />
+                                <button type="submit">
+                                    ❤️ @cheep.Likes
+                                </button>
+                            </form>
+                        }
+                    </div>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <em>There are no cheeps so far.</em>
+    }
+
+    <!-- Pagination Controls -->
+    <div class="pagination" style="margin-top: 20px;">
+        @if (currentPage > 1)
+        {
+            <a href="/?page=@prevPage" class="btn btn-secondary">Previous</a>
+        }
+        <a href="/?page=@nextPage" class="btn btn-primary">Next</a>
+        <span style="margin-left:10px;">Page @currentPage</span>
+    </div>

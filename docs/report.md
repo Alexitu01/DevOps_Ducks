@@ -1,5 +1,5 @@
 ---
-title: _Chirp!_ Project Report
+title: _ITUMiniTwit!_ Project Report
 subtitle: ITU BDSA 2025 Group `26`
 author:
 - "Nanna Helge <nanhe@itu.dk>"
@@ -25,7 +25,7 @@ The diagram above is a general and simplistic model of our onion architecture. W
 ![UML Onion Architecture](diagrams/png/UML%20OnionArchitecture.png)
 
 ### Architecture of deployed application
-Our Chirp application is a client-server application, meaning clients send HTTP requests to the server, which is then responsible for rendering the web pages, updating and persisting data changes in the database and redirection of the client through the application when needed. Our webserver is hosted by Azure App Service. The illustration shows SQLite as a separate component which is probably a bit misleading. In reality our database is a `.db` file within our application, but we wanted to include the database when illustrating the deployed application.\
+Our ITUMiniTwit application is a client-server application, meaning clients send HTTP requests to the server, which is then responsible for rendering the web pages, updating and persisting data changes in the database and redirection of the client through the application when needed. Our webserver is hosted by Azure App Service. The illustration shows SQLite as a separate component which is probably a bit misleading. In reality our database is a `.db` file within our application, but we wanted to include the database when illustrating the deployed application.\
 ![Deployed Application](diagrams/png/Deployed%20Application.png)
 
 ### User activities
@@ -42,7 +42,7 @@ The flow starts by displaying the `public timeline`. The user navigates to the `
 From the `About Me` page, the user can choose to use the `Forget Me` functionality. This action triggers a confirmation alert to prevent accidental deletion. Once the deletion is confirmed, the user account is removed and the application returns to displaying the `public timeline` in a non-authenticated state. \
 ![About Me and Delete Me](diagrams/png/about-me-and-delete-me.png)
 
-### Sequence of functionality/calls through _Chirp!_
+### Sequence of functionality/calls through _ITUMiniTwit!_
 The illustration shows HTTP calls from a client to the web server for both authenticated and non-authenticated users. It shows how the different layers of the onion architecture work to retrieve, change and insert new data to the database. Moreover, it shows the separation of frontend and backend logic.\
 ![Sequence Diagram](diagrams/png/SequenceDiagram.png)
 
@@ -68,26 +68,26 @@ We managed to implement all required functionality of the project including a wi
 Lastly, we had an old issue which is still open called `Adjust test suites`. It has remained open because the issue has been relevant throughout the semester, as we have continuously implemented new features which would need testing.
 ![Teamwork](diagrams/png/Teamwork.png)
 
-### How to make *Chirp!* work locally
+### How to make *ITUMiniTwit!* work locally
 In order to run our project locally follow these steps:
 1. Firstly install the .NET SDK-version `.NET 8.0`.
 2. Clone our Git repository from the terminal with:
 ```bash
-git clone https://github.com/ITU-BDSA2025-GROUP26/Chirp.git
+git clone https://github.com/ITU-BDSA2025-GROUP26/ITUMiniTwit.git
 ``` 
-The folder should now contain (among other things): `src`, `test`,`Chirp.Razor.sln`.
+The folder should now contain (among other things): `src`, `test`,`ITUMiniTwit.Razor.sln`.
 
-3. To allow registering with GitHub `cd` into `src/Chirp.Web` and run the three following commands in your terminal:
+3. To allow registering with GitHub `cd` into `src/ITUMiniTwit.Web` and run the three following commands in your terminal:
 ```bash
 dotnet user-secrets init
 dotnet user-secrets set "authentication_github_clientId" "Ov23li8tJVPjkWxP3PA0"
 dotnet user-secrets set "authentication_github_clientSecret" "dbb574deaac6b57c60ad2d322fd84b9caf22f83d"
 ```
-4. To ensure HTTPS `cd` into `src/Chirp.Web` and run the following in your terminal: 
+4. To ensure HTTPS `cd` into `src/ITUMiniTwit.Web` and run the following in your terminal: 
 ```bash
 dotnet dev-certs https --trust
 ```
-5. To run the project `cd` into `src/Chirp.Web` and from here, in the terminal run: 
+5. To run the project `cd` into `src/ITUMiniTwit.Web` and from here, in the terminal run: 
 ```bash
 dotnet run
 ```
@@ -99,14 +99,14 @@ After the last step there should be the following two links:
 Pressing either of the links will redirect to the homepage of our application and use HTTPS. To close the application press Ctrl + C in the terminal window.
 
 ### How to run test suite locally
-In our Chirp project we have a folder named `test` containing all our unit, integration and end-to-end tests. We have tried to structure our folders accordingly, meaning the projects folders are nested hierarchically. For example the `UnitTest` folder contains multiple folders named after the layer it is testing (core, infrastructure and web). The same goes for the `IntegrationTest` folder. \
+In our ITUMiniTwit project we have a folder named `test` containing all our unit, integration and end-to-end tests. We have tried to structure our folders accordingly, meaning the projects folders are nested hierarchically. For example the `UnitTest` folder contains multiple folders named after the layer it is testing (core, infrastructure and web). The same goes for the `IntegrationTest` folder. \
 Both unit and integration tests are made using XUnit, while the end-to-end tests are made using Playwright and NUnit.
 
 To run the XUnit tests (unit and integration tests), the user needs `.NET 8.0`. To test single test projects `cd` into a test folder which contains a `.csproj` file, and then run:
 ```bash
 dotnet test
 ```
-For example to run the integration tests regarding our infrastructure, `cd` into `test/IntegrationTest/Chirp.InfrastructureTests` and then run `dotnet test`. 
+For example to run the integration tests regarding our infrastructure, `cd` into `test/IntegrationTest/ITUMiniTwit.InfrastructureTests` and then run `dotnet test`. 
 
 To run the end-to-end tests, Playwright will firstly need to be installed:
 1. `cd` into `test/PlaywrightTests/PlaywrightTest`
@@ -122,8 +122,8 @@ dotnet build
 ```bash
 dotnet playwright install
 ```
-To run the Playwright tests it is required that the project is running in its own terminal as well. First run the project with `dotnet run` in `src/Chirp.Web`. Afterwards in a new terminal `cd` into `test/PlaywrightTests/PlaywrightTest` and then run `dotnet test`.\
-It is also possible to run all the tests in the project by executing `dotnet test` in the root directory containing the `Chirp.Razor.sln` file. This includes Playwright tests, but these will fail, if the program is not running in another terminal.
+To run the Playwright tests it is required that the project is running in its own terminal as well. First run the project with `dotnet run` in `src/ITUMiniTwit.Web`. Afterwards in a new terminal `cd` into `test/PlaywrightTests/PlaywrightTest` and then run `dotnet test`.\
+It is also possible to run all the tests in the project by executing `dotnet test` in the root directory containing the `ITUMiniTwit.Razor.sln` file. This includes Playwright tests, but these will fail, if the program is not running in another terminal.
 
 **Test suite** \
 We have tried to regulary write tests for the features, that we have implemented throughout the project. This includes both unit tests, integration tests (using WebApplicationFactory from C#) and end-to-end tests. Moreover, we have tried to organise our tests, first into the type of test and then which layer of the onion architecture, the test class was testing. When running the code with dotCover in JetBrains Rider, it shows a coverage of 30%. This number should be higher, and next time we have to make a similar project, it will be a focus point to write more tests.
@@ -132,11 +132,11 @@ We have tried to regulary write tests for the features, that we have implemented
 ## Ethics
 
 ### License
-We have chosen the MIT License for Chirp. The MIT License is a short and permissive license that provides a high degree of freedom in how the project can be used, modified and distributed.
+We have chosen the MIT License for ITUMiniTwit. The MIT License is a short and permissive license that provides a high degree of freedom in how the project can be used, modified and distributed.
 
 When selecting a license, the group considered several options and used choosealicense.com as guidance. After evaluating the alternatives, the MIT License was chosen as it best matched the goals of the project. We also verified that all dependencies listed in the `.csproj` file are compatible with the MIT License.
 
-The license file is located at `Chirp/LICENSE`.
+The license file is located at `ITUMiniTwit/LICENSE`.
 
 ### LLMs, ChatGPT, CoPilot, and others
 One member of the group did not use any LLMs during development, while the remaining group members did. LLMs were primarily used as a support tool for tasks such as debugging code (both logical erros and syntax issues), understanding error messages, and generating or validating CLI commands.
