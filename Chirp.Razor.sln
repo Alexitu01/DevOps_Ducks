@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{80D177A7-1BB5-4496-86C0-6DE4709FDFA4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chirp.Web", "src\Chirp.Web\Chirp.Web.csproj", "{D806E945-FAA9-4B38-B579-BAA709E547C4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ITUMiniTwit.Web", "src\ITUMiniTwit.Web\ITUMiniTwit.Web.csproj", "{D806E945-FAA9-4B38-B579-BAA709E547C4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{6DBCB533-C5FA-4096-9937-5DC1E1C3C09C}"
 EndProject
@@ -13,17 +13,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IntegrationTest", "Integrat
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTest", "UnitTest", "{C7E1EF47-F464-48AC-BC90-347AEE3D7E18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chirp.Core", "src\Chirp.Core\Chirp.Core.csproj", "{14F86A16-864A-4B62-96FB-CE9316E00D15}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ITUMiniTwit.Core", "src\ITUMiniTwit.Core\ITUMiniTwit.Core.csproj", "{14F86A16-864A-4B62-96FB-CE9316E00D15}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chirp.Infrastructure", "src\Chirp.Infrastructure\Chirp.Infrastructure.csproj", "{A9C741FF-196A-4684-B195-C49012355BAE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ITUMiniTwit.Infrastructure", "src\ITUMiniTwit.Infrastructure\ITUMiniTwit.Infrastructure.csproj", "{A9C741FF-196A-4684-B195-C49012355BAE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chirp.Web.Tests", "test\UnitTest\Chirp.Web.Tests\Chirp.Web.Tests.csproj", "{FF1DC4F4-980B-4611-A56D-A48C6779E593}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ITUMiniTwit.Web.Tests", "test\UnitTest\ITUMiniTwit.Web.Tests\ITUMiniTwit.Web.Tests.csproj", "{FF1DC4F4-980B-4611-A56D-A48C6779E593}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chirp.Infrastructure.Tests", "test\UnitTest\Chirp.Infrastructure.Tests\Chirp.Infrastructure.Tests.csproj", "{4214ABC4-762C-4306-A6C5-03F2B9C2F9E1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ITUMiniTwit.Infrastructure.Tests", "test\UnitTest\ITUMiniTwit.Infrastructure.Tests\ITUMiniTwit.Infrastructure.Tests.csproj", "{4214ABC4-762C-4306-A6C5-03F2B9C2F9E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chirp.Core.Tests", "test\UnitTest\Chirp.Core.Tests\Chirp.Core.Tests.csproj", "{60582193-376F-4E03-A31C-BA51082F9A7B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ITUMiniTwit.Core.Tests", "test\UnitTest\ITUMiniTwit.Core.Tests\ITUMiniTwit.Core.Tests.csproj", "{60582193-376F-4E03-A31C-BA51082F9A7B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chirp.InfrastructureTests", "test\IntegrationTest\Chirp.InfrastructureTests\Chirp.InfrastructureTests.csproj", "{F9F06C92-19DF-4FA2-A60D-29EFC2BAE72E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ITUMiniTwit.InfrastructureTests", "test\IntegrationTest\ITUMiniTwit.InfrastructureTests\ITUMiniTwit.InfrastructureTests.csproj", "{F9F06C92-19DF-4FA2-A60D-29EFC2BAE72E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlaywrightTest", "test\PlaywrightTests\PlaywrightTest\PlaywrightTest.csproj", "{FA9702E9-2F4B-472B-BFFC-1770D82BFDA2}"
 EndProject
