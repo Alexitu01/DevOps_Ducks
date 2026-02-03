@@ -26,12 +26,6 @@ builder.Services
     .AddAuthentication(options =>
     {
         options.RequireAuthenticatedSignIn = true;
-    })
-    .AddGitHub(options =>
-    {
-        options.ClientId = builder.Configuration["authentication_github_clientId"]!;
-        options.ClientSecret = builder.Configuration["authentication_github_clientSecret"]!;
-        options.CallbackPath = "/signin-github";
     });
 builder.Services.AddHsts(options =>
 {
