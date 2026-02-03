@@ -1,6 +1,6 @@
 #Setup for the image and container:
     #Write: 
-    #1. "docker build -f "Dockerfile" -t <tag_name> .
+    #1. "docker build -f "Dockerfile" -t <tag_name> ."
     #2. "docker run -p 8080:8080 <tag_name>"
 #Read the documentation in this file, and on this website: "https://www.roundthecode.com/dotnet-tutorials/how-do-you-write-dockerfile-asp-net-core-app"
 
@@ -15,16 +15,16 @@ WORKDIR /source
 # `./ .` means “copy everything here” - and if it was written like: `./src` it would copy only that folder.
 COPY ./ .
 
-#Change the WORKDIR, to Chirp.Web.
-WORKDIR /source/src/Chirp.Web
+#Change the WORKDIR, to ITUMiniTwit.Web.
+WORKDIR /source/src/ITUMiniTwit.Web
 
 #Now we can call the necessary dotnet logic - restore, build and publish.
 #The '-o + path' refers to where docker will put the "output" of those actions.
 #This becomes relevant when we want docker to refer to the outputs later (especially the dll file from the publish)
 #(Again these paths only exist within the docker image)
-RUN dotnet restore "./Chirp.Web.csproj" 
-RUN dotnet build "./Chirp.Web.csproj" -o /app/build
-RUN dotnet publish "./Chirp.Web.csproj" -o /app/publish
+RUN dotnet restore "./ITUMiniTwit.Web.csproj" 
+RUN dotnet build "./ITUMiniTwit.Web.csproj" -o /app/build
+RUN dotnet publish "./ITUMiniTwit.Web.csproj" -o /app/publish
 
 
 #Defines the SDK for running the app.
@@ -36,5 +36,5 @@ WORKDIR /app
 #Now we copy the dll, that we got from building.
 COPY --from=build /app/publish .
 
-#Define the default executable that docker will run (dotnet Chirp.Web.dll)
-ENTRYPOINT ["dotnet", "Chirp.Web.dll"]
+#Define the default executable that docker will run (dotnet ITUMiniTwit.Web.dll)
+ENTRYPOINT ["dotnet", "ITUMiniTwit.Web.dll"]
