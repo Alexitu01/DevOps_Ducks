@@ -8,7 +8,7 @@ using NuGet.Protocol;
 
 [ApiController]
 [Route("fllws")]
-public class TestController: ControllerBase
+public class TestController : ControllerBase
 {
     private readonly AuthorService _AuthServ;
 
@@ -21,18 +21,30 @@ public class TestController: ControllerBase
     [HttpGet("{username}")]
     public async Task<IActionResult> Get(string username)
     {
+        try { _AuthServ.GetAuthorByName(username); } catch { return NotFound(); }
+        
+        string value = Request.Headers["c2ltdWxhdG9yOnN1cGVyX3NhZmUh"];
+        if(value == null)
+        {
+            var returncode = new {status = 0, error_msg = "Not authorized"};
+            return Unauthorized(returncode);
+        }
+
         List<Author> list = await _AuthServ.GetFollowing(username);
-        List<string> follows = new List<string>(); 
+        List<string> follows = new List<string>();
         foreach (Author x in list)
         {
             follows.Add(x.UserName ?? "");
         }
-        return Ok(new {follows});
+
+
+        return Ok(new { follows });
+
     }
 
     [HttpPost]
     public IActionResult Post(string username)
     {
-        return Ok(new {message = "hello"});
+        return Ok(new { message = "hello" });
     }
 }
