@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages();
+builder.Services.AddControllers();
+builder.Services.AddScoped<AuthorService>();
 builder.Services.AddScoped<ICheepService, CheepService>();
 builder.Services.AddScoped<ICheepRepository, CheepRepository>();
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
@@ -63,7 +65,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
-
+app.MapControllers();
 app.Run();
 
 public partial class Program { } // For integration tests
