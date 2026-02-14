@@ -1,3 +1,4 @@
+using System.Net;
 using System.Text.Json.Nodes;
 using ITUMiniTwit.Core.Models;
 using ITUMiniTwit.Infrastructure.ITUMiniTwit.Repositories;
@@ -6,19 +7,25 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using NuGet.Protocol;
 
+
+public static class LatestState
+{
+    public static int state = 0;
+}
+
 [ApiController]
 [Route("fllws")]
-public class TestController : ControllerBase
+public class fllwsController : ControllerBase
 {
     private readonly AuthorService _AuthServ;
-    public TestController(AuthorService AuthServ)
+    public fllwsController(AuthorService AuthServ)
     {
         _AuthServ = AuthServ;
     }
 
 
     [HttpGet("{username}")]
-    public async Task<IActionResult> Get(string username)
+    public async Task<IActionResult> Get(string username, [FromQuery] int? latest)
     {
         try { _AuthServ.GetAuthorByName(username); } catch { return NotFound(); }
         if (!Authorization()){ 
@@ -26,13 +33,16 @@ public class TestController : ControllerBase
             }
 
         List<string> follows = await getFollowingUsernames(username);
-
+        if(latest != null)
+        {
+            LatestState.state = (int) latest; 
+        }
         return Ok(new { follows });
 
     }
 
     [HttpPost("{username}")]
-    public async Task<IActionResult> Post(string username, [FromBody] FollowAction body)
+    public async Task<IActionResult> Post(string username, [FromBody] FollowAction body, [FromQuery] int? latest)
     {
         try { _AuthServ.GetAuthorByName(username); } catch { return NotFound(); }
         if (!Authorization())
@@ -49,6 +59,10 @@ public class TestController : ControllerBase
         if(body.Unfollow != null)
         {
             await _AuthServ.Unfollow(user,username);
+        }
+        if(latest != null)
+        {
+            LatestState.state = (int) latest; 
         }
 
         return NoContent();
@@ -83,4 +97,36 @@ public class TestController : ControllerBase
         public string? Follow {get; set;}
         public string? Unfollow {get; set;}
     }
+}
+
+[ApiController]
+[Route("latest")]
+public class latestController : ControllerBase
+{
+    AuthorService _AuthServ;
+
+    public latestController(AuthorService AuthServ)
+    {
+        _AuthServ = AuthServ;
+    }
+
+    [HttpGet("")]
+    public IActionResult Get()
+    {
+        return Ok(new {latest = LatestState.state});
+    }
+    
+}
+
+[ApiController]
+[Route("msgs")]
+public class messageController : ControllerBase
+{  
+}
+
+[ApiController]
+[Route("register")]
+public class registerController : ControllerBase
+{
+    
 }
