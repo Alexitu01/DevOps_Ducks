@@ -20,17 +20,17 @@ public static class LatestState
 [Route("fllws")]
 public class fllwsController : ControllerBase
 {
-    private readonly AuthorService _AuthServ;
-    public fllwsController(AuthorService AuthServ)
+    private readonly AuthorService _AuthorServ;
+    public fllwsController(AuthorService AuthorServ)
     {
-        _AuthServ = AuthServ;
+        _AuthorServ = AuthorServ;
     }
 
 
     [HttpGet("{username}")]
     public async Task<IActionResult> Get(string username, [FromQuery(Name = "no")] int? num, [FromQuery] int? latest)
     {
-        try { _AuthServ.GetAuthorByName(username); } catch { return NotFound(); }
+        try { _AuthorServ.GetAuthorByName(username); } catch { return NotFound(); }
         if (!Authorization())
         {
             return StatusCode(403, new { status = 0, error_msg = "Not authorized" });
@@ -62,11 +62,11 @@ public class fllwsController : ControllerBase
     
         if (body.Follow != null)
         {
-            await _AuthServ.Follow(user, username);
+            await _AuthorServ.Follow(user, username);
         }
         if (body.Unfollow != null)
         {
-            await _AuthServ.Unfollow(user, username);
+            await _AuthorServ.Unfollow(user, username);
         }
         if (latest != null)
         {
@@ -112,7 +112,7 @@ public class fllwsController : ControllerBase
 
     public async Task<List<string>> getFollowingUsernames(string user, int? num)
     {
-        List<Author> list = await _AuthServ.GetFollowing(user);
+        List<Author> list = await _AuthorServ.GetFollowing(user);
         List<string> follows = new List<string>();
         if (num != null)
         {
@@ -162,9 +162,11 @@ public class latestController : ControllerBase
 public class messageController : ControllerBase
 {
     CheepService _CheepServ;
-    public messageController(CheepService CheepServ)
+    AuthorService _AuthorServ;
+    public messageController(CheepService CheepServ, AuthorService AuthorServ)
     {
         _CheepServ = CheepServ;
+        _AuthorServ = AuthorServ;
     }
 
     [HttpGet("")]
@@ -201,9 +203,34 @@ public class messageController : ControllerBase
     }
 
     [HttpGet("{username}")]
-    public IActionResult GetWithUsername()
+    public IActionResult GetWithUsername(string username, [FromQuery(Name = "no")] int? num, [FromQuery(Name = "latest")] int? latest)
     {
-        return Ok(null);
+        if (!Authorization()){ 
+            return StatusCode(403, new { status = 0, error_msg = "Not authorized" });}
+
+        try { _AuthorServ.GetAuthorByName(username); } catch { return NotFound(); }
+
+        List<CheepDto> list = new List<CheepDto>();
+        if(num != null) {
+            list = _CheepServ.GetCheepsFromAuthor(username, 1, (int) num);}
+        else{
+           list = _CheepServ.GetCheepsFromAuthor(username, 1, 100);}
+
+        List<messageInfo> messageInfos = new List<messageInfo>();
+        foreach (CheepDto Dto in list)
+        {
+            messageInfos.Add(new messageInfo
+            {
+                content = Dto.Text,
+                pub_date = Dto.TimeStamp,
+                user = Dto.Author
+            });
+        }
+
+        if (latest != null){ 
+            LatestState.state = (int)latest; }
+
+        return Ok(messageInfos);
     }
 
     [HttpPost("{username}")]
