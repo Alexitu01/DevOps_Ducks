@@ -28,7 +28,7 @@ public class fllwsController : ControllerBase
 
 
     [HttpGet("{username}")]
-    public async Task<IActionResult> Get(string username, [FromQuery] int? latest)
+    public async Task<IActionResult> Get(string username, [FromQuery(Name = "no")] int? num, [FromQuery] int? latest)
     {
         try { _AuthServ.GetAuthorByName(username); } catch { return NotFound(); }
         if (!Authorization())
@@ -36,7 +36,7 @@ public class fllwsController : ControllerBase
             return StatusCode(403, new { status = 0, error_msg = "Not authorized" });
         }
 
-        List<string> follows = await getFollowingUsernames(username);
+        List<string> follows = await getFollowingUsernames(username, num);
         if (latest != null)
         {
             LatestState.state = (int)latest;
@@ -53,9 +53,13 @@ public class fllwsController : ControllerBase
         {
             return StatusCode(403, new { status = 0, error_msg = "Not authorized" });
         }
-
-        var user = User.Identity!.Name!;
-
+        
+        var user = GetUserThroughAuth();
+        if(user == null)
+        {
+            return NotFound();
+        }
+    
         if (body.Follow != null)
         {
             await _AuthServ.Follow(user, username);
@@ -84,18 +88,47 @@ public class fllwsController : ControllerBase
         if (encodedUsernamePassword == "c2ltdWxhdG9yOnN1cGVyX3NhZmUh")
         {
             return true;
-        }else{
-            return false;}
+        }
+        else
+        {
+            return false;
+        }
     }
 
-    public async Task<List<string>> getFollowingUsernames(string user)
+    public string? GetUserThroughAuth()
+    {
+        string? authHeader = Request.Headers["Authorization"];
+        if (authHeader == null || !authHeader.StartsWith("Basic"))
+        {
+            return null;
+        }
+
+        string encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+        Encoding encoding = Encoding.GetEncoding("UTF8");
+        string usernamePassword = encoding.GetString(Convert.FromBase64String(encodedUsernamePassword));
+        string username = usernamePassword.Split(":")[0];
+        return username;
+    }
+
+    public async Task<List<string>> getFollowingUsernames(string user, int? num)
     {
         List<Author> list = await _AuthServ.GetFollowing(user);
         List<string> follows = new List<string>();
-        foreach (Author x in list)
+        if (num != null)
         {
-            follows.Add(x.UserName ?? "");
+            for (int i = 0; i < Math.Min((int)num, list.Count); i++)
+            {
+                follows.Add(list[i].UserName ?? "");
+            }
         }
+        else
+        {
+            foreach (Author x in list)
+            {
+                follows.Add(x.UserName ?? "");
+            }
+        }
+
         return follows;
     }
 
@@ -198,8 +231,11 @@ public class messageController : ControllerBase
         if (encodedUsernamePassword == "c2ltdWxhdG9yOnN1cGVyX3NhZmUh")
         {
             return true;
-        }else{
-            return false;}
+        }
+        else
+        {
+            return false;
+        }
     }
 }
 
