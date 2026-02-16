@@ -1,14 +1,9 @@
-using System.Net;
 using System.Text;
-using System.Text.Json.Nodes;
 using ITUMiniTwit.Core;
 using ITUMiniTwit.Core.Models;
-using ITUMiniTwit.Infrastructure.ITUMiniTwit.Repositories;
 using ITUMiniTwit.Infrastructure.ITUMiniTwit.Service;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Primitives;
-using Newtonsoft.Json.Linq;
-using NuGet.Protocol;
 
 
 public static class LatestState
@@ -53,20 +48,14 @@ public class fllwsController : ControllerBase
         {
             return StatusCode(403, new { status = 0, error_msg = "Not authorized" });
         }
-        
-        var user = GetUserThroughAuth();
-        if(user == null)
-        {
-            return NotFound();
-        }
     
         if (body.Follow != null)
         {
-            await _AuthorServ.Follow(user, username);
+            await _AuthorServ.Follow(username, body.Follow);
         }
         if (body.Unfollow != null)
         {
-            await _AuthorServ.Unfollow(user, username);
+            await _AuthorServ.Unfollow(username, body.Unfollow);
         }
         if (latest != null)
         {
@@ -139,6 +128,8 @@ public class fllwsController : ControllerBase
     }
 }
 
+
+
 [ApiController]
 [Route("latest")]
 public class latestController : ControllerBase
@@ -156,6 +147,9 @@ public class latestController : ControllerBase
         }
     }
 }
+
+
+
 
 [ApiController]
 [Route("msgs")]
@@ -175,17 +169,15 @@ public class messageController : ControllerBase
         if (!Authorization())
         { return StatusCode(403, new { status = 0, error_msg = "Not authorized" }); }
 
-        List<CheepDto> list = new List<CheepDto>();
-        if (num != null)
-        {
-            list = _CheepServ.GetCheeps(1, (int)num);
-        }
-        else
-        {
-            list = _CheepServ.GetCheeps(1, 100);
-        }
-
+        List<CheepDto> list;
         List<messageInfo> messageInfos = new List<messageInfo>();
+        
+        if (num != null){ 
+            list = _CheepServ.GetCheeps(1, (int)num); }
+        else {
+            list = _CheepServ.GetCheeps(1, 100);}
+
+       
         foreach (CheepDto Dto in list)
         {
             messageInfos.Add(new messageInfo
@@ -207,16 +199,17 @@ public class messageController : ControllerBase
     {
         if (!Authorization()){ 
             return StatusCode(403, new { status = 0, error_msg = "Not authorized" });}
-
         try { _AuthorServ.GetAuthorByName(username); } catch { return NotFound(); }
 
-        List<CheepDto> list = new List<CheepDto>();
+        List<CheepDto> list;
+        List<messageInfo> messageInfos = new List<messageInfo>();
+
         if(num != null) {
             list = _CheepServ.GetCheepsFromAuthor(username, 1, (int) num);}
         else{
            list = _CheepServ.GetCheepsFromAuthor(username, 1, 100);}
 
-        List<messageInfo> messageInfos = new List<messageInfo>();
+
         foreach (CheepDto Dto in list)
         {
             messageInfos.Add(new messageInfo
@@ -227,8 +220,8 @@ public class messageController : ControllerBase
             });
         }
 
-        if (latest != null){ 
-            LatestState.state = (int)latest; }
+        if (latest != null)
+        { LatestState.state = (int)latest; }
 
         return Ok(messageInfos);
     }
@@ -262,20 +255,51 @@ public class messageController : ControllerBase
         }
 
         string encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
-        if (encodedUsernamePassword == "c2ltdWxhdG9yOnN1cGVyX3NhZmUh")
-        {
+        if (encodedUsernamePassword == "c2ltdWxhdG9yOnN1cGVyX3NhZmUh"){
             return true;
-        }
-        else
-        {
+        } else{
             return false;
         }
     }
 }
 
+
+
+
 [ApiController]
 [Route("register")]
 public class registerController : ControllerBase
 {
+    UserManager<Author> _userManager;
+    public registerController(UserManager<Author> userManager)
+    {
+        _userManager = userManager;
+    }
+    [HttpPost]
+    public async Task<IActionResult> Post([FromBody] RegisterInfo registerInfo, [FromQuery(Name ="latest")] int? latest)
+    {
+        Author newUser = new Author
+        {
+            UserName = registerInfo.username,
+            Email = registerInfo.email
+        };
+        
+        var result = await _userManager.CreateAsync(newUser, registerInfo.pwd);
+        if (!result.Succeeded){
+            return StatusCode(400, new {status = 0, error_msg = "Bad Request. Either email/username is already taken or, following are missing: username, email or password."});
+        }
 
+        if(latest != null){
+            LatestState.state = latest;
+        }
+        return NoContent();
+    }
+
+
+    public class RegisterInfo()
+    {
+        public required string username {get; set;}
+        public required string email {get; set;}
+        public required string pwd {get; set;}
+    }
 }
