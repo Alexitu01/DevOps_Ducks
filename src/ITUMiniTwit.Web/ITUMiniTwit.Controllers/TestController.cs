@@ -48,7 +48,7 @@ public class fllwsController : ControllerBase
     [HttpPost("{username}")]
     public async Task<IActionResult> Post(string username, [FromBody] FollowAction body, [FromQuery] int? latest)
     {
-        try { _AuthServ.GetAuthorByName(username); } catch { return NotFound(); }
+        try { _AuthorServ.GetAuthorByName(username); } catch { return NotFound(); }
         if (!Authorization())
         {
             return StatusCode(403, new { status = 0, error_msg = "Not authorized" });
@@ -234,9 +234,16 @@ public class messageController : ControllerBase
     }
 
     [HttpPost("{username}")]
-    public IActionResult Post()
+    public IActionResult Post(string username, [FromBody] string content, [FromQuery(Name ="latest")] int? latest)
     {
-        return Ok(null);
+        if (!Authorization())
+        { return StatusCode(403, new { status = 0, error_msg = "Not authorized" }); }
+        
+        _CheepServ.AddCheep(username, content);
+       
+        if(latest != null){ LatestState.state = latest; }
+
+        return NoContent();
     }
 
     public class messageInfo
