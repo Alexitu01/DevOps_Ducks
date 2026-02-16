@@ -15,8 +15,8 @@ public static class LatestState
 [Route("fllws")]
 public class fllwsController : ControllerBase
 {
-    private readonly AuthorService _AuthorServ;
-    public fllwsController(AuthorService AuthorServ)
+    private readonly IAuthorService _AuthorServ;
+    public fllwsController(IAuthorService AuthorServ)
     {
         _AuthorServ = AuthorServ;
     }
@@ -155,9 +155,9 @@ public class latestController : ControllerBase
 [Route("msgs")]
 public class messageController : ControllerBase
 {
-    CheepService _CheepServ;
-    AuthorService _AuthorServ;
-    public messageController(CheepService CheepServ, AuthorService AuthorServ)
+    ICheepService _CheepServ;
+    IAuthorService _AuthorServ;
+    public messageController(ICheepService CheepServ, IAuthorService AuthorServ)
     {
         _CheepServ = CheepServ;
         _AuthorServ = AuthorServ;
@@ -172,10 +172,17 @@ public class messageController : ControllerBase
         List<CheepDto> list;
         List<messageInfo> messageInfos = new List<messageInfo>();
         
+        try{
         if (num != null){ 
             list = _CheepServ.GetCheeps(1, (int)num); }
         else {
             list = _CheepServ.GetCheeps(1, 100);}
+
+        }
+        catch(Exception e)
+        {
+            return StatusCode(500, e.Message);
+        }
 
        
         foreach (CheepDto Dto in list)
