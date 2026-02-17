@@ -65,7 +65,7 @@ public class fllwsController : ControllerBase
         return NoContent();
     }
 
-    public bool Authorization()
+    private bool Authorization()
     {
         string? authHeader = Request.Headers["Authorization"];
         if (authHeader == null || !authHeader.StartsWith("Basic"))
@@ -84,7 +84,7 @@ public class fllwsController : ControllerBase
         }
     }
 
-    public string? GetUserThroughAuth()
+    private string? GetUserThroughAuth()
     {
         string? authHeader = Request.Headers["Authorization"];
         if (authHeader == null || !authHeader.StartsWith("Basic"))
@@ -99,7 +99,7 @@ public class fllwsController : ControllerBase
         return username;
     }
 
-    public async Task<List<string>> getFollowingUsernames(string user, int? num)
+    private async Task<List<string>> getFollowingUsernames(string user, int? num)
     {
         List<Author> list = await _AuthorServ.GetFollowing(user);
         List<string> follows = new List<string>();
@@ -234,12 +234,11 @@ public class messageController : ControllerBase
     }
 
     [HttpPost("{username}")]
-    public IActionResult Post(string username, [FromBody] string content, [FromQuery(Name ="latest")] int? latest)
+    public IActionResult Post(string username, [FromBody] messageContent message, [FromQuery(Name ="latest")] int? latest)
     {
         if (!Authorization())
         { return StatusCode(403, new { status = 0, error_msg = "Not authorized" }); }
-        
-        _CheepServ.AddCheep(username, content);
+        _CheepServ.AddCheep(username, message.content);
        
         if(latest != null){ LatestState.state = latest; }
 
@@ -251,6 +250,11 @@ public class messageController : ControllerBase
         public string? content { get; set; }
         public string? pub_date { get; set; }
         public string? user { get; set; }
+    }
+
+    public class messageContent
+    {
+        public required string content {get;set;}
     }
 
     public bool Authorization()
