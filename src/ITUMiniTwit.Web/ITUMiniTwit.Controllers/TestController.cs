@@ -4,6 +4,8 @@ using ITUMiniTwit.Core.Models;
 using ITUMiniTwit.Infrastructure.ITUMiniTwit.Service;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 
 
 public static class LatestState
@@ -48,7 +50,7 @@ public class fllwsController : ControllerBase
         {
             return StatusCode(403, new { status = 0, error_msg = "Not authorized" });
         }
-    
+
         if (body.Follow != null)
         {
             await _AuthorServ.Follow(username, body.Follow);
@@ -171,20 +173,25 @@ public class messageController : ControllerBase
 
         List<CheepDto> list;
         List<messageInfo> messageInfos = new List<messageInfo>();
-        
-        try{
-        if (num != null){ 
-            list = _CheepServ.GetCheeps(1, (int)num); }
-        else {
-            list = _CheepServ.GetCheeps(1, 100);}
+
+        try
+        {
+            if (num != null)
+            {
+                list = _CheepServ.GetCheeps(1, (int)num);
+            }
+            else
+            {
+                list = _CheepServ.GetCheeps(1, 100);
+            }
 
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             return StatusCode(500, e.Message);
         }
 
-       
+
         foreach (CheepDto Dto in list)
         {
             messageInfos.Add(new messageInfo
@@ -204,17 +211,23 @@ public class messageController : ControllerBase
     [HttpGet("{username}")]
     public IActionResult GetWithUsername(string username, [FromQuery(Name = "no")] int? num, [FromQuery(Name = "latest")] int? latest)
     {
-        if (!Authorization()){ 
-            return StatusCode(403, new { status = 0, error_msg = "Not authorized" });}
+        if (!Authorization())
+        {
+            return StatusCode(403, new { status = 0, error_msg = "Not authorized" });
+        }
         try { _AuthorServ.GetAuthorByName(username); } catch { return NotFound(); }
 
         List<CheepDto> list;
         List<messageInfo> messageInfos = new List<messageInfo>();
 
-        if(num != null) {
-            list = _CheepServ.GetCheepsFromAuthor(username, 1, (int) num);}
-        else{
-           list = _CheepServ.GetCheepsFromAuthor(username, 1, 100);}
+        if (num != null)
+        {
+            list = _CheepServ.GetCheepsFromAuthor(username, 1, (int)num);
+        }
+        else
+        {
+            list = _CheepServ.GetCheepsFromAuthor(username, 1, 100);
+        }
 
 
         foreach (CheepDto Dto in list)
@@ -234,13 +247,13 @@ public class messageController : ControllerBase
     }
 
     [HttpPost("{username}")]
-    public IActionResult Post(string username, [FromBody] messageContent message, [FromQuery(Name ="latest")] int? latest)
+    public IActionResult Post(string username, [FromBody] messageContent message, [FromQuery(Name = "latest")] int? latest)
     {
         if (!Authorization())
         { return StatusCode(403, new { status = 0, error_msg = "Not authorized" }); }
         _CheepServ.AddCheep(username, message.content);
-       
-        if(latest != null){ LatestState.state = latest; }
+
+        if (latest != null) { LatestState.state = latest; }
 
         return NoContent();
     }
@@ -254,7 +267,7 @@ public class messageController : ControllerBase
 
     public class messageContent
     {
-        public required string content {get;set;}
+        public required string content { get; set; }
     }
 
     public bool Authorization()
@@ -266,9 +279,12 @@ public class messageController : ControllerBase
         }
 
         string encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
-        if (encodedUsernamePassword == "c2ltdWxhdG9yOnN1cGVyX3NhZmUh"){
+        if (encodedUsernamePassword == "c2ltdWxhdG9yOnN1cGVyX3NhZmUh")
+        {
             return true;
-        } else{
+        }
+        else
+        {
             return false;
         }
     }
@@ -287,30 +303,37 @@ public class registerController : ControllerBase
         _userManager = userManager;
     }
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] RegisterInfo registerInfo, [FromQuery(Name ="latest")] int? latest)
+    public async Task<IActionResult> Post([FromBody] RegisterInfo registerInfo, [FromQuery(Name = "latest")] int? latest)
     {
         Author newUser = new Author
         {
             UserName = registerInfo.username,
             Email = registerInfo.email
         };
-        
-        var result = await _userManager.CreateAsync(newUser, registerInfo.pwd);
-        if (!result.Succeeded){
-            return StatusCode(400, new {status = 0, error_msg = "Bad Request. Either email/username is already taken or, following are missing: username, email or password."});
+        try
+        {
+            var result = await _userManager.CreateAsync(newUser, registerInfo.pwd);
+            if (!result.Succeeded)
+            {
+                return StatusCode(400, new { status = 0, error_msg = "Bad Request. Either email/username is already taken or, following are missing: username, email or password." });
+            }
+            if (latest != null)
+            {
+                LatestState.state = latest;
+            }
+            return NoContent();
         }
-
-        if(latest != null){
-            LatestState.state = latest;
+        catch (DbUpdateException e )
+        {
+            return StatusCode(400, new{status = 0, error_msg = "Bad Request" + e});
         }
-        return NoContent();
     }
 
 
     public class RegisterInfo()
     {
-        public required string username {get; set;}
-        public required string email {get; set;}
-        public required string pwd {get; set;}
+        public required string username { get; set; }
+        public required string email { get; set; }
+        public required string pwd { get; set; }
     }
 }
