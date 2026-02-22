@@ -5,15 +5,17 @@
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
-Vagrant.configure("2") do |config|
+
   # The most common configuration options are documented and commented below.
   # For a complete reference, please see the online documentation at
   # https://docs.vagrantup.com.
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
-  config.vm.define = "webserver", primary; true do |server|
-  server.vm.provider :digital_ocean do |provider, override|
+ Vagrant.configure("2") do |config|
+  config.vm.define "webserver", primary: true do |server|
+    server.vm.provider :digital_ocean do |provider, override|
+      
       # SSH configuration
       override.ssh.private_key_path = "~/.ssh/id_rsa"
       override.vm.box = 'digital_ocean'
@@ -24,7 +26,7 @@ Vagrant.configure("2") do |config|
       # DigitalOcean configuration
       provider.token = ENV['DIGITAL_OCEAN_TOKEN']
       provider.ssh_key_name = ENV['SSH_KEY_NAME']
-      provider.image = "ubuntu-18-04-x64"
+      provider.image = "ubuntu-22-04-x64"
       provider.region = "fra1"
       provider.size = "s-1vcpu-1gb"
       provider.ipv6 = false
