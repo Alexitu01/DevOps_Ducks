@@ -35,12 +35,22 @@
       provider.monitoring = true
     end
 
-      server.vm.provision "shell", inline: <<-SHELL
-      echo "=== Updating system ==="
-      apt-get update -y
-      apt-get upgrade -y
+  server.vm.provision "shell", inline: <<-SHELL
+  echo "=== Updating system ==="
+  apt-get update -y
+  apt-get upgrade -y
 
-      echo 
+  echo "=== Installing Docker ==="
+  apt-get install -y docker.io
+  systemctl start docker
+  systemctl enable docker
+
+  echo "=== Build and run ITUMiniTwit ==="
+  cd /vagrant
+  docker build -t itu-minitwit .
+  docker run -d -p 8080:8080 --name ituminitwit --restart unless-stopped itu-minitwit
+  SHELL
+  end
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
   # `vagrant box outdated`. This is not recommended.
