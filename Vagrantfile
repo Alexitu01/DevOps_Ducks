@@ -38,10 +38,9 @@
   server.vm.provision "shell", inline: <<-SHELL
   echo "=== Updating system ==="
   apt-get update -y
-  apt-get upgrade -y
 
   echo "=== Installing Docker ==="
-  apt-get install -y docker.io
+  DEBIAN_FRONTEND=noninteractive apt-get install -y docker-io
   systemctl start docker
   systemctl enable docker
 
