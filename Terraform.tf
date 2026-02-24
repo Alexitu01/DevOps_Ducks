@@ -13,6 +13,10 @@ provider "digitalocean" {
   token = var.DIGITAL_OCEAN_TOKEN
 }
 
+output "droplet_ip"{
+  value = digitalocean_droplet.web.ipv4_address
+}
+
 data "digitalocean_ssh_key" "default" {
   name = "terraform" # Replace with your actual DO SSH key name
 }
