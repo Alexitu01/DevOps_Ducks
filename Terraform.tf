@@ -13,12 +13,13 @@ provider "digitalocean" {
   token = var.DIGITAL_OCEAN_TOKEN
 }
 
+# Added the stuff beneath, it prints the IP address to the console
 output "droplet_ip"{
   value = digitalocean_droplet.web.ipv4_address
 }
 
 data "digitalocean_ssh_key" "default" {
-  name = "Nanna_Laptop" # Replace with your actual DO SSH key name
+  name = "terraform" # Replace with your actual DO SSH key name
 }
 
 resource "digitalocean_droplet" "web" {
@@ -43,9 +44,10 @@ resource "digitalocean_droplet" "web" {
       "git clone https://github.com/Alexitu01/DevOps_Ducks.git",
       "cd DevOps_Ducks",
       "sudo docker build -f Dockerfile -t itu-minitwit .",
-      "sudo docker run -d -p 80:8080 itu-minitwit"
+      "sudo docker run -d -p 80:8080 itu-minitwit" 
+      #Changed the Docker port from 80:80 to 80:8080. Droplet Console showed it was running on 8080
     ]
-
+    
     connection {
       type        = "ssh"
       user        = "root"
