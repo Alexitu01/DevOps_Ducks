@@ -19,7 +19,7 @@ output "droplet_ip"{
 }
 
 data "digitalocean_ssh_key" "default" {
-  name = "terraform" # Replace with your actual DO SSH key name
+  name = "Nanna_Laptop" # Replace with your actual DO SSH key name
 }
 
 resource "digitalocean_droplet" "web" {
