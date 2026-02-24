@@ -45,7 +45,7 @@ resource "digitalocean_droplet" "web" {
       "cd DevOps_Ducks",
       "cd src/ITUMiniTwit.Web",
       "dotnet dev-certs https --trust",
-      "cd ../.."
+      "cd ../..",
       "sudo docker build -f Dockerfile -t itu-minitwit .",
       "sudo docker run -d -p 80:80 itu-minitwit" 
       #Changed the Docker port from 80:80 to 80:8080. Droplet Console showed it was running on 8080
