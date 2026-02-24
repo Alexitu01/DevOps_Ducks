@@ -44,7 +44,7 @@ resource "digitalocean_droplet" "web" {
       "git clone https://github.com/Alexitu01/DevOps_Ducks.git",
       "cd DevOps_Ducks",
       "sudo docker build -f Dockerfile -t itu-minitwit .",
-      "sudo docker run -d -p 80:8080 itu-minitwit" 
+      "sudo docker run -d -p 80:80 itu-minitwit" 
       #Changed the Docker port from 80:80 to 80:8080. Droplet Console showed it was running on 8080
     ]
     
