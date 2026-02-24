@@ -1,6 +1,6 @@
 #Setup for the image and container:
-    #Write: 
-    #1. "docker build -f "Dockerfile" -t <tag_name> ."
+    #Write form root: 
+    #1. "docker build -f "Docker/Web/Dockerfile" -t <tag_name> ."
     #2. "docker run -p 8080:8080 <tag_name>"
 #Read the documentation in this file, and on this website: "https://www.roundthecode.com/dotnet-tutorials/how-do-you-write-dockerfile-asp-net-core-app"
 
