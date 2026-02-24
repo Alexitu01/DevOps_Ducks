@@ -43,7 +43,7 @@ resource "digitalocean_droplet" "web" {
       "git clone https://github.com/Alexitu01/DevOps_Ducks.git",
       "cd DevOps_Ducks",
       "sudo docker build -f Dockerfile -t ITU-MiniTwit .",
-      "sudo docker run -d -p 80:80 ITU-MiniTwit"
+      "sudo docker run -d -p 80:8080 ITU-MiniTwit"
     ]
 
     connection {
