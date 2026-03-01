@@ -1,0 +1,38 @@
+services:
+  mysql-service:
+    image: mysql:latest
+    container_name: mysql-service
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "minitwit", "-psecret"]
+      interval: 5s
+      timeout: 10s
+      retries: 3
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_USER: minitwit
+      MYSQL_PASSWORD: secret
+      MYSQL_DATABASE: minitwitDB
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - minitwit-network
+
+  webserver:
+    image: app:latest
+    ports:
+      - "5001:80"
+    depends_on: 
+      mysql-service: 
+        condition: service_healthy
+        
+    networks:
+      - minitwit-network
+    
+volumes:
+  db_data:
+    driver: local
+
+networks:
+  minitwit-network:
+    name: "minitwit-network"
+    external: True

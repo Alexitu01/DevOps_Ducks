@@ -3,6 +3,7 @@ using ITUMiniTwit.Infrastructure.ITUMiniTwit.Repositories;
 using ITUMiniTwit.Infrastructure;
 using ITUMiniTwit.Web;
 using Microsoft.EntityFrameworkCore;
+using Pomelo.EntityFrameworkCore.MySql;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using ITUMiniTwit.Core.Models;
@@ -19,7 +20,9 @@ builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 builder.Services.AddScoped<IAuthorService, AuthorService>();
 
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ITUMiniTwitDBContext>(options => options.UseSqlite(connectionString));
+var serverVersion = new MySqlServerVersion(new Version(8, 0, 29));
+
+builder.Services.AddDbContext<ITUMiniTwitDBContext>(options => options.UseMySql(connectionString, serverVersion));
 
 builder.Services.AddDefaultIdentity<Author>(options => {
     options.SignIn.RequireConfirmedAccount = false;
