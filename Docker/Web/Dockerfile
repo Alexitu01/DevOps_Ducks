@@ -36,5 +36,9 @@ WORKDIR /app
 #Now we copy the dll, that we got from building.
 COPY --from=build /app/publish .
 
+ENV ASPNETCORE_URLS=http://+:80
+
+EXPOSE 80
+
 #Define the default executable that docker will run (dotnet ITUMiniTwit.Web.dll)
 ENTRYPOINT ["dotnet", "ITUMiniTwit.Web.dll"]
