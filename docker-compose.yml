@@ -18,7 +18,7 @@ services:
       - minitwit-network
 
   webserver:
-    image: app:latest
+    image: nhelge/minitwit:latest
     ports:
       - "5001:80"
     depends_on: 
