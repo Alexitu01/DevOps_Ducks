@@ -18,8 +18,7 @@ output "droplet_ip"{
   value = digitalocean_droplet.web.ipv4_address
 }
 
-data "digitalocean_ssh_key" "default" {
-  name = "Nanna_Laptop" # Replace with your actual DO SSH key name
+data "digitalocean_ssh_keys" "all" {
 }
 
 resource "digitalocean_droplet" "web" {
@@ -27,7 +26,7 @@ resource "digitalocean_droplet" "web" {
   name               = "web"
   region             = "fra1"
   size               = "s-1vcpu-1gb"
-  ssh_keys           = [data.digitalocean_ssh_key.default.id]
+  ssh_keys           = [data.digitalocean_ssh_keys.all.ssh_keys[*].id]
   private_networking = true
 
 
