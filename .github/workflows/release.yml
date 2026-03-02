@@ -84,11 +84,30 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and push
+      - name: Build and push ITUMiniTwit
         uses: docker/build-push-action@v6
         with:
           file: Docker/Web/Dockerfile
           context: .
           push: true
           tags: ${{secrets.DOCKER_USERNAME}}/minitwit:latest
-    
+      
+      - name: Build and push MySQL
+        uses: docker/build-push-action@v6
+        with:
+          file: Docker/Web/Dockerfile #Change to different Dockerfile
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/sqlimage:latest
+
+        # https://github.com/appleboy/ssh-action?tab=readme-ov-file#-core-concepts--input-parameters
+      - name: Deploy to Droplet
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          passowrd: ${{ secrets.SSH_KEY }}
+          script: |
+            cd /root
+            docker compose pull
+            docker compose up -d

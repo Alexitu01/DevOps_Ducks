@@ -30,6 +30,13 @@ resource "digitalocean_droplet" "web" {
   ssh_keys           = [data.digitalocean_ssh_key.default.id]
   private_networking = true
 
+
+  provisioner "file" {
+    source = "docker-compose.yml"
+    destination = "/root/docker-compose.yml"
+  }
+
+
   provisioner "remote-exec" {
     inline = [
       "sudo apt-get update -y",
@@ -40,15 +47,12 @@ resource "digitalocean_droplet" "web" {
       "sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin",
       "sudo systemctl enable docker",
       "sudo systemctl start docker",
-      "cd /root",
-      "git clone https://github.com/Alexitu01/DevOps_Ducks.git",
-      "cd DevOps_Ducks",
-      "cd src/ITUMiniTwit.Web",
-      "dotnet dev-certs https --trust",
-      "cd ../..",
-      "sudo docker build -f Dockerfile -t itu-minitwit .",
-      "sudo docker run -d -p 80:80 itu-minitwit" 
-      #Changed the Docker port from 80:80 to 80:8080. Droplet Console showed it was running on 8080
+      "cd /root"
+      #"git clone https://github.com/Alexitu01/DevOps_Ducks.git",
+      #"cd DevOps_Ducks",
+      #"cd src/ITUMiniTwit.Web",
+      #"sudo docker build -f Dockerfile -t itu-minitwit .",
+      #"sudo docker run -d -p 80:80 itu-minitwit" 
     ]
     
     connection {
