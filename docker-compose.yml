@@ -2,6 +2,8 @@ services:
   mysql-service:
     image: mysql:latest #This is the official MySQL image from Docker Hub. In the future we will build our own image in the repository.
     container_name: mysql-service
+    ports: 
+      - "3306:3306"
     healthcheck: #Necessary to make sure that the webserver only starts after the database is running.
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "minitwit", "-psecret"]
       interval: 10s
