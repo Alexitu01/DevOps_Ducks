@@ -90,16 +90,7 @@ jobs:
           file: Docker/Web/Dockerfile
           context: .
           push: true
-          tags: ${{secrets.DOCKER_USERNAME}}/minitwit:latest
-      
-      #- name: Build and push MySQL
-        #uses: docker/build-push-action@v6
-        #with:
-         #file: Docker/Web/Dockerfile #Change to different Dockerfile
-         #context: .
-          #push: true
-          #tags: ${{ secrets.DOCKER_USERNAME }}/sqlimage:latest
-          
+          tags: ${{secrets.DOCKER_USERNAME}}/minitwit
 
         # https://github.com/appleboy/ssh-action?tab=readme-ov-file#-core-concepts--input-parameters
       - name: Deploy to Droplet
