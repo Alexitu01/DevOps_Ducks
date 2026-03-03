@@ -1,0 +1,40 @@
+services:
+  mysql-service:
+    image: mysql:latest #This is the official MySQL image from Docker Hub. In the future we will build our own image in the repository.
+    container_name: mysql-service
+    ports: 
+      - "3306:3306"
+    healthcheck: #Necessary to make sure that the webserver only starts after the database is running.
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "minitwit", "-psecret"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+    environment: #These are the variables needed for someone to access the MySQL database and MySQL also needs these variables to be set up correctly. (Should be hidden in the future with secrets)
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_USER: minitwit
+      MYSQL_PASSWORD: secret
+      MYSQL_DATABASE: minitwitDB
+    volumes: #The volume basically defines a place on the host machine to persist the data from the MySQL database. So if the container stops the data will still remain on the host machine.
+      - db_data:/var/lib/mysql
+    networks: #Defines the network in Docker that MySQL and the webserver will be connected to in order to communicate with each other (it's just an arbitrary name for the network)
+      - minitwit-network
+
+  webserver:
+    image: nhelge/minitwit:latest #Repository name + tag of the image on Docker Hub.
+    ports:
+      - "5001:80"
+    depends_on: #Makes sure that the webserver only starts after the healthcheck succeeds (see healthcheck in mysql-service))
+      mysql-service: 
+        condition: service_healthy
+        
+    networks:
+      - minitwit-network
+    
+volumes: #The volume that the mysql-service refers to. "local" means it will be stored on the host machine.
+  db_data:
+    driver: local
+
+networks: #Again just an arbitrary name for the network that the services will be connected to.
+  minitwit-network:
+    name: "minitwit-network"
+    external: false 
