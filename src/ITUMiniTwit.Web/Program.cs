@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using ITUMiniTwit.Core.Models;
 using ITUMiniTwit.Web.Areas.Identity.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +47,9 @@ builder.Services.AddHsts(options =>
 {
     options.MaxAge = TimeSpan.FromDays(60);
 });
+
+builder.Services.UseHttpClientMetrics();
+
 var app = builder.Build();
 
 // Create a disposable service scope
@@ -72,6 +76,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseHttpMetrics();
+app.MapMetrics();
 
 app.UseAuthentication();
 app.UseAuthorization();
