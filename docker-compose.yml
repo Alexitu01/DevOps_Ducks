@@ -42,6 +42,15 @@ services:
       - "9090:9090"
     networks:
       - minitwit-network
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - minitwit-network
     
 volumes: #The volume that the mysql-service refers to. "local" means it will be stored on the host machine.
   db_data:
