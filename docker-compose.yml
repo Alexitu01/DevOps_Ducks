@@ -47,6 +47,7 @@ volumes: #The volume that the mysql-service refers to. "local" means it will be 
   db_data:
     driver: local
   prometheus_data:
+  grafana_data:
 
 networks: #Again just an arbitrary name for the network that the services will be connected to.
   minitwit-network:

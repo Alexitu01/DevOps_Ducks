@@ -49,6 +49,9 @@ builder.Services.AddHsts(options =>
 {
     options.MaxAge = TimeSpan.FromDays(60);
 });
+
+builder.Services.UseHttpClientMetrics();
+
 var app = builder.Build();
 
 // Create a disposable service scope
@@ -75,6 +78,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseHttpMetrics();
+app.MapMetrics();
 
 app.UseAuthentication();
 app.UseAuthorization();
