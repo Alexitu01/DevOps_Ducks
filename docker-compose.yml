@@ -20,7 +20,10 @@ services:
       - minitwit-network
 
   webserver:
-    image: nhelge/minitwit:latest #Repository name + tag of the image on Docker Hub.
+    build:
+      context: .
+      dockerfile: Docker/web/Dockerfile
+    image: minitwit:web #Repository name + tag of the image on Docker Hub.
     ports:
       - "5001:80"
     depends_on: #Makes sure that the webserver only starts after the healthcheck succeeds (see healthcheck in mysql-service))
@@ -29,10 +32,21 @@ services:
         
     networks:
       - minitwit-network
+  
+  prometheus:
+    image: prom/prometheus:v2.51.0
+    volumes:
+      - ./Moniter/Prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - minitwit-network
     
 volumes: #The volume that the mysql-service refers to. "local" means it will be stored on the host machine.
   db_data:
     driver: local
+  prometheus_data:
 
 networks: #Again just an arbitrary name for the network that the services will be connected to.
   minitwit-network:
