@@ -18,6 +18,7 @@ services:
       - db_data:/var/lib/mysql
     networks: #Defines the network in Docker that MySQL and the webserver will be connected to in order to communicate with each other (it's just an arbitrary name for the network)
       - minitwit-network
+    restart: unless-stopped #This makes sure that the container will be restarted if it stops for some reason.
 
   webserver:
     image: nhelge/minitwit:latest #Repository name + tag of the image on Docker Hub.
@@ -29,7 +30,7 @@ services:
         
     networks:
       - minitwit-network
-    
+    restart: unless-stopped #This makes sure that the container will be restarted if it stops for some reason.
 volumes: #The volume that the mysql-service refers to. "local" means it will be stored on the host machine.
   db_data:
     driver: local
