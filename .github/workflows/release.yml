@@ -92,7 +92,8 @@ jobs:
           push: true
           tags: ${{secrets.DOCKER_USERNAME}}/minitwit
       
-      #Add following step to copy docker-compose file into VM in order to avoid running Terraform.tf
+      # Add following step to copy docker-compose file into VM in order to avoid running Terraform.tf
+      # https://github.com/appleboy/scp-action
       - name: Upload docker-compose
         uses: appleboy/scp-action@v1
         with:
@@ -101,6 +102,22 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           source: docker-compose.yml
           target: /root
+
+        # Creating .env file via SSH to VM in order to use environment variables for database etc.
+      - name: Create .env file
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cat << EOF > /root/.env
+            MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}
+            MYSQL_USER=${{ secrets.MYSQL_USER }}
+            MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
+            MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}
+            DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
+            EOF
 
         # https://github.com/appleboy/ssh-action?tab=readme-ov-file#-core-concepts--input-parameters
       - name: Deploy to Droplet
