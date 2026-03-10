@@ -1,19 +1,17 @@
 services:
   mysql-service:
-    image: mysql:latest #This is the official MySQL image from Docker Hub. In the future we will build our own image in the repository.
+    image: mysql:9.6.0 #This is the official MySQL image from Docker Hub. In the future we will build our own image in the repository.
     container_name: mysql-service
-    ports: 
-      - "3306:3306"
     healthcheck: #Necessary to make sure that the webserver only starts after the database is running.
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "minitwit", "-psecret"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "${MYSQL_USER}", "-p${MYSQL_PASSWORD}"]
       interval: 45s
       timeout: 10s
       retries: 3
-    environment: #These are the variables needed for someone to access the MySQL database and MySQL also needs these variables to be set up correctly. (Should be hidden in the future with secrets)
-      MYSQL_ROOT_PASSWORD: secret
-      MYSQL_USER: minitwit
-      MYSQL_PASSWORD: secret
-      MYSQL_DATABASE: minitwitDB
+    environment: #These are the variables needed for someone to access the MySQL database and MySQL also needs these variables to be set up correctly. 
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
     volumes: #The volume basically defines a place on the host machine to persist the data from the MySQL database. So if the container stops the data will still remain on the host machine.
       - db_data:/var/lib/mysql
     networks: #Defines the network in Docker that MySQL and the webserver will be connected to in order to communicate with each other (it's just an arbitrary name for the network)
@@ -21,7 +19,11 @@ services:
     restart: unless-stopped #This makes sure that the container will be restarted if it stops for some reason.
 
   webserver:
-    image: nhelge/minitwit:latest #Repository name + tag of the image on Docker Hub.
+    image: ${DOCKER_USERNAME}/minitwit:latest #Repository name + tag of the image on Docker Hub.
+    environment: #These are the environment variables that the webserver needs to run and connect to the MySQL database.
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ASPNETCORE_URLS: "http://+:80"
+      ConnectionStrings__DefaultConnection: "Server=mysql-service;database=${MYSQL_DATABASE}; User=${MYSQL_USER};Password=${MYSQL_PASSWORD};"
     ports:
       - "80:80"
     depends_on: #Makes sure that the webserver only starts after the healthcheck succeeds (see healthcheck in mysql-service))
@@ -32,13 +34,14 @@ services:
       - minitwit-network
     restart: unless-stopped #This makes sure that the container will be restarted if it stops for some reason.
   
+  # Prometheus port should not be exposed
   prometheus:
     image: prom/prometheus:v2.51.0
     volumes:
       - ./Moniter/Prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
-    ports:
-      - "9090:9090"
+    #ports:
+     # - "9090:9090"
     networks:
       - minitwit-network
   grafana:
