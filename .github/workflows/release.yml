@@ -93,14 +93,14 @@ jobs:
           tags: ${{secrets.DOCKER_USERNAME}}/minitwit
       
       #Add following step to copy docker-compose file into VM in order to avoid running Terraform.tf
-      #- name: Upload docker-compose
-      #  uses: appleboy/scp-action@v0.1.7
-      #  with:
-      #    host: ${{ secrets.SSH_HOST }}
-      #    username: ${{ secrets.SSH_USER }}
-      #    key: ${{ secrets.SSH_KEY }}
-      #    source: docker-compose.yml
-      #    target: /root
+      - name: Upload docker-compose
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: docker-compose.yml
+          target: /root
 
         # https://github.com/appleboy/ssh-action?tab=readme-ov-file#-core-concepts--input-parameters
       - name: Deploy to Droplet
