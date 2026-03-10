@@ -29,10 +29,31 @@ services:
         
     networks:
       - minitwit-network
+  
+  prometheus:
+    image: prom/prometheus:v2.51.0
+    volumes:
+      - ./Moniter/Prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - minitwit-network
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - minitwit-network
     
 volumes: #The volume that the mysql-service refers to. "local" means it will be stored on the host machine.
   db_data:
     driver: local
+  prometheus_data:
+  grafana_data:
 
 networks: #Again just an arbitrary name for the network that the services will be connected to.
   minitwit-network:

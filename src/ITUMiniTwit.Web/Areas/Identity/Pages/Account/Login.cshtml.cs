@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using ITUMiniTwit.Core.Models;
+using ITUMiniTwit.Infrastructure.ITUMiniTwit.Moniter;
 
 namespace ITUMiniTwit.Web.Areas.Identity.Pages.Account
 {
@@ -22,11 +23,14 @@ namespace ITUMiniTwit.Web.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<Author> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly ILoginMetrics _loginMetrics;
 
-        public LoginModel(SignInManager<Author> signInManager, ILogger<LoginModel> logger)
+
+        public LoginModel(SignInManager<Author> signInManager, ILogger<LoginModel> logger, ILoginMetrics loginMetrics)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _loginMetrics = loginMetrics;
         }
 
         /// <summary>
@@ -118,6 +122,7 @@ namespace ITUMiniTwit.Web.Areas.Identity.Pages.Account
                 var result = await _signInManager.PasswordSignInAsync(Input.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
+                    _loginMetrics.RecordSuccess();
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }
@@ -127,11 +132,13 @@ namespace ITUMiniTwit.Web.Areas.Identity.Pages.Account
                 }
                 if (result.IsLockedOut)
                 {
+                    _loginMetrics.RecordFailure(); //this also counts as failure
                     _logger.LogWarning("User account locked out.");
                     return RedirectToPage("./Lockout");
                 }
                 else
                 {
+                    _loginMetrics.RecordFailure();
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                     return Page();
                 }
