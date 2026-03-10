@@ -1,5 +1,6 @@
 using ITUMiniTwit.Infrastructure.ITUMiniTwit.Service;
 using ITUMiniTwit.Infrastructure.ITUMiniTwit.Repositories;
+using ITUMiniTwit.Infrastructure.ITUMiniTwit.Moniter;
 using ITUMiniTwit.Infrastructure;
 using ITUMiniTwit.Web;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using ITUMiniTwit.Core.Models;
 using ITUMiniTwit.Web.Areas.Identity.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +20,7 @@ builder.Services.AddScoped<ICheepService, CheepService>();
 builder.Services.AddScoped<ICheepRepository, CheepRepository>();
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 builder.Services.AddScoped<IAuthorService, AuthorService>();
+builder.Services.AddSingleton<ILoginMetrics, LoginMetrics>();
 
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 var serverVersion = new MySqlServerVersion(new Version(8, 0, 29));
@@ -46,6 +49,9 @@ builder.Services.AddHsts(options =>
 {
     options.MaxAge = TimeSpan.FromDays(60);
 });
+
+builder.Services.UseHttpClientMetrics();
+
 var app = builder.Build();
 
 // Create a disposable service scope
@@ -73,11 +79,20 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseHttpMetrics();
+app.MapMetrics();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
+//collect and display http metrics
+app.UseHttpMetrics();
+
+
 app.MapRazorPages();
 app.MapControllers();
+app.MapMetrics();
+
 app.Run();
 
 public partial class Program { } // For integration tests
