@@ -20,10 +20,7 @@ services:
       - minitwit-network
 
   webserver:
-    build:
-      context: .
-      dockerfile: Docker/web/Dockerfile
-    image: minitwit:web #Repository name + tag of the image on Docker Hub.
+    image: nhelge/minitwit:latest #Repository name + tag of the image on Docker Hub.
     ports:
       - "5001:80"
     depends_on: #Makes sure that the webserver only starts after the healthcheck succeeds (see healthcheck in mysql-service))
