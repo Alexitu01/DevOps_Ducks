@@ -78,19 +78,17 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+//collect http metrics
 app.UseHttpMetrics();
-app.MapMetrics();
+
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-//collect and display http metrics
-app.UseHttpMetrics();
-
 
 app.MapRazorPages();
 app.MapControllers();
+// display http metrics
 app.MapMetrics();
 
 app.Run();
