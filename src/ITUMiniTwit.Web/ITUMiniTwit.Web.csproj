@@ -29,6 +29,13 @@
   </ItemGroup>
 
   <ItemGroup>
+  <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.507">
+    <PrivateAssets>all</PrivateAssets>
+    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+  </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
     <AdditionalFiles Include="Pages\Public.cshtml" />
     <AdditionalFiles Include="Pages\Shared\_Layout.cshtml" />
     <AdditionalFiles Include="Pages\UserTimeline.cshtml" />
