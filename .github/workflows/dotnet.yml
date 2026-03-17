@@ -39,6 +39,16 @@ jobs:
           New-Item -Path .\.sonar\scanner -ItemType Directory
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
 
+      - name: Install SonarCloud scanner
+        shell: pwsh
+        run: |
+          New-Item -Path .\.sonar\scanner -ItemType Directory -Force
+          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
+          Write-Host "Current directory:"
+          Get-Location
+          Write-Host "Scanner dir contents:"
+          Get-ChildItem .\.sonar\scanner -Force
+
       - name: SonarCloud Scan
         shell: pwsh
         env:
