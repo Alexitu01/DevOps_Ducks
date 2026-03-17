@@ -34,6 +34,7 @@ jobs:
           dotnet test test/IntegrationTest/ITUMiniTwit.InfrastructureTests/ITUMiniTwit.InfrastructureTests.csproj --configuration Release --no-restore
 
       - name: Install SonarCloud scanner
+        shell: pwsh
         run: |
           New-Item -Path .\.sonar\scanner -ItemType Directory
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
