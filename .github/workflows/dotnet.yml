@@ -33,11 +33,16 @@ jobs:
           dotnet test test/UnitTest/ITUMiniTwit.Web.Tests/ITUMiniTwit.Web.Tests.csproj --configuration Release --no-restore
           dotnet test test/IntegrationTest/ITUMiniTwit.InfrastructureTests/ITUMiniTwit.InfrastructureTests.csproj --configuration Release --no-restore
 
+      - name: Install SonarCloud scanner
+        run: |
+          New-Item -Path .\.sonar\scanner -ItemType Directory
+          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
+
       - name: SonarCloud Scan
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"Alexitu01_DevOps_Ducks" /o:"alexitu01" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"Alexitu01_DevOps_Ducks" /o:"alexitu01" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
           dotnet build
-          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
