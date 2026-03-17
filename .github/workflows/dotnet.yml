@@ -25,12 +25,6 @@ jobs:
       - name: Build solution
         run: dotnet build ITUMiniTwit.Razor.sln --configuration Release --no-restore
         
-      - name: Install Playwright CLI
-        run: dotnet tool install --global Microsoft.Playwright.CLI
-
-      - name: Install Playwright browsers
-        run: playwright install --with-deps
-
       # Run ONLY unit + integration tests
       - name: Run unit and integration tests (no Playwright in CI)
         run: |
@@ -38,3 +32,19 @@ jobs:
           dotnet test test/UnitTest/ITUMiniTwit.Infrastructure.Tests/ITUMiniTwit.Infrastructure.Tests.csproj --configuration Release --no-restore
           dotnet test test/UnitTest/ITUMiniTwit.Web.Tests/ITUMiniTwit.Web.Tests.csproj --configuration Release --no-restore
           dotnet test test/IntegrationTest/ITUMiniTwit.InfrastructureTests/ITUMiniTwit.InfrastructureTests.csproj --configuration Release --no-restore
+
+      - name: Install SonarCloud scanner
+        shell: pwsh
+        run: |
+          New-Item -Path ./sonar/scanner -ItemType Directory -Force
+          dotnet tool update dotnet-sonarscanner --tool-path ./sonar/scanner
+
+      - name: SonarCloud Scan
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          ./sonar/scanner/dotnet-sonarscanner begin /k:"Alexitu01_DevOps_Ducks" /o:"alexitu01" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+          dotnet build
+          ./sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"

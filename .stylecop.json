@@ -1,0 +1,21 @@
+{
+  "$schema": "https://raw.githubusercontent.com/DotNetAnalyzers/StyleCopAnalyzers/master/StyleCop.Analyzers/StyleCop.Analyzers/Settings/stylecop.schema.json",
+  "settings": {
+    "indentation": {
+      "indentationSize": 4,
+      "useSpaces": true
+    },
+    "documentationRules": {
+      "documentInterfaces": true,
+      "documentExposedElements": true,
+      "documentInternalElements": true,
+      "documentPrivateElements": false,
+      "documentPrivateMethods": false,
+      "xmlHeader": true
+    },
+    "namingConventions": {
+      "allowCommonHungarianPrefixes": true,
+      "allowPrivateFieldLeadingUnderscore": true
+    }
+  }
+}

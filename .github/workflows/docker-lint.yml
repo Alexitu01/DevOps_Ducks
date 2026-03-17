@@ -1,0 +1,25 @@
+name: Docker Lint
+
+on:
+  push:
+    paths:
+      - 'Docker/**'
+      - 'docker-compose.yml'
+  pull_request:
+    paths:
+      - 'Docker/**'
+      - 'docker-compose.yml'
+
+jobs:
+  hadolint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Hadolint
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Docker/Web/Dockerfile
+          ignore: DL3008,DL3009
+          failure-threshold: warning
