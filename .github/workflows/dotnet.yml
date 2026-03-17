@@ -24,6 +24,12 @@ jobs:
 
       - name: Build solution
         run: dotnet build ITUMiniTwit.Razor.sln --configuration Release --no-restore
+
+      - name: SonarCloud Scan
+        run: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         
       - name: Install Playwright CLI
         run: dotnet tool install --global Microsoft.Playwright.CLI
