@@ -58,18 +58,23 @@ services:
     image: grafana/loki:latest
     command: -config.file=/etc/loki/loki-config.yml
     volumes:
-      - ./loki-config.yml:/etc/loki/loki-config.yml
+      - ./loki/loki-config.yml:/etc/loki/loki-config.yml
       - loki_data:/loki
     restart: unless-stopped
+    networks:
+      - minitwit-network
 
   alloy:
     image: grafana/alloy:latest
     volumes:
       - ./alloy/config.alloy:/etc/alloy/config.alloy
-      - var/run/docker.sock:/var/run/docker.sock
+      - alloy_data:/alloy
     depends_on:
       - loki
     restart: unless-stopped
+    networks:
+      - minitwit-network
+
     
 volumes: #The volume that the mysql-service refers to. "local" means it will be stored on the host machine.
   db_data:
@@ -77,6 +82,7 @@ volumes: #The volume that the mysql-service refers to. "local" means it will be 
   prometheus_data:
   grafana_data:
   loki_data:
+  alloy_data:
 
 networks: #Again just an arbitrary name for the network that the services will be connected to.
   minitwit-network:
