@@ -26,10 +26,10 @@ jobs:
         run: dotnet build ITUMiniTwit.Razor.sln --configuration Release --no-restore
 
       - name: Initialize CodeQL
-        uses: codeql-action/init@v1
+        uses: github/codeql-action/init@v1
         
       - name: Perform CodeQL analysis
-        uses: codeql-action/analyze@v1
+        uses: github/codeql-action/analyze@v1
         
       # Run ONLY unit + integration tests
       - name: Run unit and integration tests (no Playwright in CI)
