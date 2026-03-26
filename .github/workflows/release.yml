@@ -28,6 +28,12 @@ jobs:
 
       - name: Build via .NET
         run: dotnet build src/ITUMiniTwit.Web --configuration Release
+      
+      - name: Initialize CodeQL
+        uses: codeql-action/init@v1
+        
+      - name: Perform CodeQL analysis
+        uses: codeql-action/analyze@v1
         
       - name: Publish WebApp
         run: dotnet publish src/ITUMiniTwit.Web/ITUMiniTwit.Web.csproj -c Release -o ${{env.DOTNET_ROOT}}/webapp
