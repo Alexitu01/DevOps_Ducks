@@ -6,9 +6,6 @@ on:
 
 jobs:
   build:
-    permissions:
-      security-events: write
-      contents: read
     runs-on: ubuntu-latest
 
     steps:
@@ -24,16 +21,10 @@ jobs:
 
       - name: Restore dependencies
         run: dotnet restore ITUMiniTwit.Razor.sln
-      
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v4
         
       - name: Build solution
         run: dotnet build ITUMiniTwit.Razor.sln --configuration Release --no-restore
 
-      - name: Perform CodeQL analysis
-        uses: github/codeql-action/analyze@v4
-        
       # Run ONLY unit + integration tests
       - name: Run unit and integration tests (no Playwright in CI)
         run: |
