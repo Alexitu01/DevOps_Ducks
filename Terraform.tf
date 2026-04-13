@@ -15,25 +15,19 @@ provider "digitalocean" {
 
 # Added the stuff beneath, it prints the IP address to the console
 output "droplet_ip"{
-  value = digitalocean_droplet.web.ipv4_address
+  value = digitalocean_droplet.ubuntu-s-2vcpu-4gb-fra1-01.ipv4_address
 }
 
 data "digitalocean_ssh_keys" "all" {
 }
 
-resource "digitalocean_droplet" "web" {
-  image              = "ubuntu-22-04-x64"
+resource "digitalocean_droplet" "ubuntu-s-2vcpu-4gb-fra1-01" {
+  image              = "ubuntu-24-04-x64"
   name               = "web"
   region             = "fra1"
-  size               = "s-1vcpu-1gb"
-  ssh_keys           = [data.digitalocean_ssh_keys.all.ssh_keys[*].id]
+  size               = "s-2vcpu-4gb"
+  ssh_keys           = data.digitalocean_ssh_keys.all.ssh_keys[*].id
   private_networking = true
-
-
-  provisioner "file" {
-    source = "docker-compose.yml"
-    destination = "/root/docker-compose.yml"
-  }
 
 
   provisioner "remote-exec" {
@@ -47,18 +41,13 @@ resource "digitalocean_droplet" "web" {
       "sudo systemctl enable docker",
       "sudo systemctl start docker",
       "cd /root"
-      #"git clone https://github.com/Alexitu01/DevOps_Ducks.git",
-      #"cd DevOps_Ducks",
-      #"cd src/ITUMiniTwit.Web",
-      #"sudo docker build -f Dockerfile -t itu-minitwit .",
-      #"sudo docker run -d -p 80:80 itu-minitwit" 
     ]
     
     connection {
       type        = "ssh"
       user        = "root"
       private_key = file("~/.ssh/id_rsa")
-      host        = digitalocean_droplet.web.ipv4_address
+      host        = digitalocean_droplet.ubuntu-s-2vcpu-4gb-fra1-01.ipv4_address
     }
   }
 }
