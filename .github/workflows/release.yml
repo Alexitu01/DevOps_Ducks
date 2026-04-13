@@ -127,6 +127,9 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
+            echo $PATH
+            which docker || echo "docker not found"
+            ls -l /usr/bin/docker
             cd /root
             docker compose pull
             docker compose up -d
