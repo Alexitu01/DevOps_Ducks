@@ -12,6 +12,22 @@ prometheus.remote_write "local_system" {
 	}
 }
 
+loki.write "default" {
+    endpoint{
+        url = "http://loki:3100/loki/api/v1/push"
+    }
+}
+
+loki.source.file "logs"{
+    targets = [
+        {__path__ = "/var/log/*.log"}
+    ]
+}
+
+loki.process "logs" {
+    forward_to = [loki.write.default.receiver]
+}
+
 logging{
     level = "debug"
     format = "logfmt"
