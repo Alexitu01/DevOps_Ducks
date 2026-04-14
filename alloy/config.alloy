@@ -13,8 +13,8 @@ prometheus.remote_write "local_system" {
 }
 
 loki.source.docker "containers" {
-    host = "unix:///var/run/docker.sock
-    targets = [{container_name = "webserver"}]
+    host = "unix:///var/run/docker.sock"
+    targets = [{container_name = "root-webserver-1"}]
     labels = {
         job = "minitwit"
     }
@@ -25,15 +25,6 @@ loki.write "default" {
     endpoint{
         url = "http://loki:3100/loki/api/v1/push"
     }
-}
-
-loki.source.file "logs"{
-    targets = [
-        {
-            __path__ = "/var/log/*.log"
-            job = "minitwit"
-        }
-    ]
 }
 
 logging{
