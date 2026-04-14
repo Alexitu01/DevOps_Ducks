@@ -40,10 +40,10 @@ schema_config:
 pattern_ingester:
   enabled: true
   metric_aggregation:
-    loki_address: localhost:3100
+    loki_address: http://loki:3100
 
 ruler:
-  alertmanager_url: http://localhost:9093
+  enabled: false
 
 
 # By default, Loki will send anonymous, but uniquely-identifiable usage and configuration
