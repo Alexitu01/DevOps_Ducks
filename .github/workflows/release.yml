@@ -12,6 +12,9 @@ on:
 
 jobs:
   release:
+    permissions:
+      security-events: write
+      contents: read
     runs-on: ubuntu-latest
 
     steps:
@@ -25,9 +28,15 @@ jobs:
 
       - name: Restore dependencies
         run: dotnet restore
+      
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
 
       - name: Build via .NET
         run: dotnet build src/ITUMiniTwit.Web --configuration Release
+      
+      - name: Perform CodeQL analysis
+        uses: github/codeql-action/analyze@v4
         
       - name: Publish WebApp
         run: dotnet publish src/ITUMiniTwit.Web/ITUMiniTwit.Web.csproj -c Release -o ${{env.DOTNET_ROOT}}/webapp

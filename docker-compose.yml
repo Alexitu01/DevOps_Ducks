@@ -14,7 +14,7 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
     volumes: #The volume basically defines a place on the host machine to persist the data from the MySQL database. So if the container stops the data will still remain on the host machine.
       - db_data:/var/lib/mysql
-    networks:
+    networks: #Defines the network in Docker that MySQL and the webserver will be connected to in order to communicate with each other (it's just an arbitrary name for the network)
       - minitwit-network
     restart: unless-stopped #This makes sure that the container will be restarted if it stops for some reason.
 

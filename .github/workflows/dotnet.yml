@@ -21,10 +21,10 @@ jobs:
 
       - name: Restore dependencies
         run: dotnet restore ITUMiniTwit.Razor.sln
-
+        
       - name: Build solution
         run: dotnet build ITUMiniTwit.Razor.sln --configuration Release --no-restore
-        
+
       # Run ONLY unit + integration tests
       - name: Run unit and integration tests (no Playwright in CI)
         run: |
