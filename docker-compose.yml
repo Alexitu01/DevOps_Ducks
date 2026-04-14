@@ -64,6 +64,7 @@ services:
   alloy:
     image: grafana/alloy:latest
     volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
       - ./alloy/config.alloy:/etc/alloy/config.alloy
       - alloy_data:/alloy
     depends_on:
