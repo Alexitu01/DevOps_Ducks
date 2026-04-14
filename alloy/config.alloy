@@ -14,12 +14,11 @@ prometheus.remote_write "local_system" {
 
 loki.source.docker "containers" {
     host = "unix:///var/run/docker.sock
-    targets = [
-        {container_name = "webserver"}
-    ]
+    targets = [{container_name = "webserver"}]
     labels = {
         job = "minitwit"
     }
+    forward_to = [loki.write.default.receiver]
 }
 
 loki.write "default" {
@@ -35,10 +34,6 @@ loki.source.file "logs"{
             job = "minitwit"
         }
     ]
-}
-
-loki.process "logs" {
-    forward_to = [loki.write.default.receiver]
 }
 
 logging{
