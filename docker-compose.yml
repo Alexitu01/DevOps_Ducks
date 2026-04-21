@@ -73,16 +73,6 @@ services:
     networks:
       - minitwit-network
 
-  nginx:
-    image: nginx:latest
-    volumes:
-      - nginx_data:/var/lib/nginx
-      - ./nginx.conf:/etc/nginx/sites-available/devopsducks.studio
-    depends_on:
-      - webserver
-    restart: unless-stopped
-    networks:
-    - minitwit-network
 
 
 volumes: #The volume that the mysql-service refers to. "local" means it will be stored on the host machine.
@@ -92,7 +82,6 @@ volumes: #The volume that the mysql-service refers to. "local" means it will be 
   grafana_data:
   loki_data:
   alloy_data:
-  nginx_data:
 
 networks: #Again just an arbitrary name for the network that the services will be connected to.
   minitwit-network:
