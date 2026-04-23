@@ -40,6 +40,7 @@ services:
     volumes:
       - ./Moniter/Prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
+    restart: unless-stopped
     networks:
       - minitwit-network
   grafana:
