@@ -29,9 +29,10 @@ services:
     depends_on: #Makes sure that the webserver only starts after the healthcheck succeeds (see healthcheck in mysql-service))
       mysql-service: 
         condition: service_healthy
-        
     networks:
-      - minitwit-network
+      - minitwit-network:
+        aliases:
+          - webserver
     restart: unless-stopped #This makes sure that the container will be restarted if it stops for some reason.
   
   # Prometheus port should not be exposed
