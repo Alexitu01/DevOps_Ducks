@@ -30,7 +30,7 @@ services:
       mysql-service: 
         condition: service_healthy
     networks:
-      - minitwit-network:
+      minitwit-network:
         aliases:
           - webserver
     restart: unless-stopped #This makes sure that the container will be restarted if it stops for some reason.
