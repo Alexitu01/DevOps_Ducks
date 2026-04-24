@@ -16,7 +16,7 @@ loki.source.docker "containers" {
     host = "unix:///var/run/docker.sock"
     targets = [{container_name = "root-webserver-1"}]
     labels = {
-        job = "minitwit"
+        "job" = "minitwit"
     }
     forward_to = [loki.write.default.receiver]
 }
