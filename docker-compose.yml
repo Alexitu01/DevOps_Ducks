@@ -57,7 +57,7 @@ services:
   loki:
     image: grafana/loki:latest
     volumes:
-      - ./loki/loki-config.yml:/etc/loki/loki-config.yml
+      - ./loki/loki-config.yml:/etc/loki/local-config.yaml
       - loki_data:/loki
     restart: unless-stopped
     networks:
