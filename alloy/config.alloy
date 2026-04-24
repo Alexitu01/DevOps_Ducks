@@ -14,7 +14,7 @@ prometheus.remote_write "local_system" {
 
 loki.source.docker "containers" {
     host = "unix:///var/run/docker.sock"
-    targets = [{container_name = "root-webserver-1"}]
+    targets = discovery.docker.containers.targets
     labels = {
         "job" = "minitwit"
     }
