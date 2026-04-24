@@ -61,7 +61,9 @@ services:
       - loki_data:/loki
     restart: unless-stopped
     networks:
-      - minitwit-network
+      minitwit-network:
+        aliases:
+          - loki
 
   alloy:
     image: grafana/alloy:latest
