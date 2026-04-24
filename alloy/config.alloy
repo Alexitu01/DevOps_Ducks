@@ -12,9 +12,13 @@ prometheus.remote_write "local_system" {
 	}
 }
 
+discovery.docker "linux" {
+  host = "unix:///var/run/docker.sock"
+}
+
 loki.source.docker "containers" {
     host = "unix:///var/run/docker.sock"
-    targets = discovery.docker.containers.targets
+    targets = discovery.docker.linux.targets
     labels = {
         "job" = "minitwit"
     }
