@@ -12,16 +12,24 @@ prometheus.remote_write "local_system" {
 	}
 }
 
-discovery.docker "linux" {
+
+discovery.docker "containers" {
   host = "unix:///var/run/docker.sock"
+}
+
+discovery.relabel "only_website" {
+    targets = discovery.docker.containers.targets
+    rule{
+        source_labels =["__meta_docker_container_name"]
+        regex = "root-webserver-1"
+        action = "keep"
+    }
 }
 
 loki.source.docker "containers" {
     host = "unix:///var/run/docker.sock"
-    targets = discovery.docker.linux.targets
-    labels = {
-        "job" = "minitwit"
-    }
+    targets = discovery.relabel.only_website.output
+    labels = {"job" = "minitwit"}
     forward_to = [loki.write.default.receiver]
 }
 
