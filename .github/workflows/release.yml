@@ -15,7 +15,6 @@ jobs:
     permissions:
       security-events: write
       contents: read
-      pull-requests: write
     runs-on: ubuntu-latest
 
     steps:
@@ -107,10 +106,8 @@ jobs:
         with:
           command: cves
           image: ${{secrets.DOCKER_USERNAME}}/minitwit:latest
-          only-severites: critical,high
+          only-severities: critical,high
           exit-code: false
-          write-comment: true
-          github-token: ${{secrets.HEMMELIGHED}}
         
       - name: Push image
         run: docker push ${{secrets.DOCKER_USERNAME}}/minitwit:latest
