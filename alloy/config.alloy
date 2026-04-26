@@ -7,9 +7,23 @@ prometheus.scrape "scrape_metrics" {
 }
 
 prometheus.remote_write "local_system" {
-	endpoint {
-		url = "http://prometheus:9090/api/v1/write"
-	}
+        endpoint {
+            url = "http://prometheus:9090/api/v1/write"
+        }
+}
+
+
+discovery.docker "containers" {
+  host = "unix:///var/run/docker.sock"
+}
+
+discovery.relabel "only_website" {
+    targets = discovery.docker.containers.targets
+    rule{
+        source_labels =["__meta_docker_container_name"]
+        regex = "/root-webserver-1"
+        action = "keep"
+    }
 }
 
 
@@ -43,4 +57,3 @@ logging{
     level = "debug"
     format = "logfmt"
 }
-
