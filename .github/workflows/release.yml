@@ -109,19 +109,9 @@ jobs:
           image: ${{secrets.DOCKER_USERNAME}}/minitwit:latest
           only-severites: critical,high
           exit-code: false
-      
-    #  - name: Docker Scout SARIF
-    #    uses: docker/scout-action@v1
-    #    with:
-    #      image: ${{secrets.DOCKER_USERNAME}}/minitwit:latest
-    #      format: sarif
-    #      output: scout.sarif
-
-    #  - name: Upload SARIF
-    #    uses: github/codeql-action/upload-sarif@v3
-    #    with:
-    #     sarif_file: scout.sarif
-
+          write-comment: true
+          github-token: ${{secrets.HEMMELIGHED}}
+        
       - name: Push image
         run: docker push ${{secrets.DOCKER_USERNAME}}/minitwit:latest
       
