@@ -16,6 +16,7 @@ jobs:
       security-events: write
       contents: read
       pull-requests: write
+      checks: write
     runs-on: ubuntu-latest
 
     steps:
