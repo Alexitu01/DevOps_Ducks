@@ -113,7 +113,9 @@ jobs:
           exit-code: false
         
       - name: Push image
-        run: docker push ${{secrets.DOCKER_USERNAME}}/minitwit:latest
+        env:
+          USERNAME: ${{secrets.DOCKER_USERNAME}}
+        run: docker push "$USERNAME"/minitwit:latest
       
       # Add following step to copy docker-compose file into VM in order to avoid running Terraform.tf
       # https://github.com/appleboy/scp-action
