@@ -15,8 +15,6 @@ jobs:
     permissions:
       security-events: write
       contents: read
-      pull-requests: write
-      checks: write
     runs-on: ubuntu-latest
 
     steps:
@@ -80,6 +78,9 @@ jobs:
   
   # new deploy workflow here:
   deploy-docker:
+    permissions:
+      pull-requests: write
+      contents: read
     runs-on: ubuntu-latest
     needs: release #Needs the release to finish successfuly - dotnet build, dotnet restore and dotnet publish
     steps:
