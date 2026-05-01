@@ -1,5 +1,5 @@
 services:
-  webserver1:
+  webserver_blue1:
     image: ${DOCKER_USERNAME}/minitwit:latest #Repository name + tag of the image on Docker Hub.
     environment: #These are the environment variables that the webserver needs to run and connect to the MySQL database.
       ASPNETCORE_ENVIRONMENT: "Production"
@@ -12,7 +12,7 @@ services:
         aliases:
           - webserver
     restart: unless-stopped #This makes sure that the container will be restarted if it stops for some reason.
-  webserver2:
+  webserver_blue2:
     image: ${DOCKER_USERNAME}/minitwit:latest #Repository name + tag of the image on Docker Hub.
     environment: #These are the environment variables that the webserver needs to run and connect to the MySQL database.
       ASPNETCORE_ENVIRONMENT: "Production"
@@ -20,6 +20,32 @@ services:
       ConnectionStrings__DefaultConnection: "Server=${MYSQL_HOST}; Port=${MYSQL_PORT}; database=${MYSQL_DATABASE}; User=${MYSQL_USER};Password=${MYSQL_PASSWORD}; SslMode=Required;"
     ports:
       - "8082:8080"
+    networks:
+      minitwit-network:
+        aliases:
+          - webserver
+    restart: unless-stopped #This makes sure that the container will be restarted if it stops for some reason.
+  webserver_green1:
+    image: ${DOCKER_USERNAME}/minitwit:latest #Repository name + tag of the image on Docker Hub.
+    environment: #These are the environment variables that the webserver needs to run and connect to the MySQL database.
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ASPNETCORE_URLS: "http://+:8080"
+      ConnectionStrings__DefaultConnection: "Server=${MYSQL_HOST}; Port=${MYSQL_PORT}; database=${MYSQL_DATABASE}; User=${MYSQL_USER};Password=${MYSQL_PASSWORD}; SslMode=Required;"
+    ports:
+      - "8083:8080"
+    networks:
+      minitwit-network:
+        aliases:
+          - webserver
+    restart: unless-stopped #This makes sure that the container will be restarted if it stops for some reason.
+  webserver_green2:
+    image: ${DOCKER_USERNAME}/minitwit:latest #Repository name + tag of the image on Docker Hub.
+    environment: #These are the environment variables that the webserver needs to run and connect to the MySQL database.
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ASPNETCORE_URLS: "http://+:8080"
+      ConnectionStrings__DefaultConnection: "Server=${MYSQL_HOST}; Port=${MYSQL_PORT}; database=${MYSQL_DATABASE}; User=${MYSQL_USER};Password=${MYSQL_PASSWORD}; SslMode=Required;"
+    ports:
+      - "8084:8080"
     networks:
       minitwit-network:
         aliases:
