@@ -7,6 +7,10 @@ scrape_configs:
     static_configs:
       - targets: ['prometheus:9090']
 
-  - job_name: 'miniTwit-app'
+  - job_name: 'blue_servers'
     static_configs:
-      - targets: ['webserver:8080']
+      - targets: ['blueserver1:8080', 'blueserver2:8080']
+  
+  - job_name: 'green_servers'
+    static_configs:
+      - targets: ['greenserver1:8080', 'greenserver2:8080']

@@ -21,21 +21,7 @@ discovery.relabel "only_website" {
     targets = discovery.docker.containers.targets
     rule{
         source_labels =["__meta_docker_container_name"]
-        regex = "/root-webserver-1"
-        action = "keep"
-    }
-}
-
-
-discovery.docker "containers" {
-  host = "unix:///var/run/docker.sock"
-}
-
-discovery.relabel "only_website" {
-    targets = discovery.docker.containers.targets
-    rule{
-        source_labels =["__meta_docker_container_name"]
-        regex = "root-webserver-1"
+        regex = "/root-(blue|green)server[12]-1"
         action = "keep"
     }
 }
