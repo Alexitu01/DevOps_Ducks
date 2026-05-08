@@ -122,12 +122,14 @@ jobs:
           
   scp-files:
     needs: [docker-scout]
+    if: github.ref == 'refs/heads/main'
     uses: ./.github/workflows/scp-files.yml
     secrets: inherit
   
   deploy_all:
     runs-on: ubuntu-latest
     needs: [scp-files]
+    if: github.ref == 'refs/heads/main'
 
     steps:
       - name: Checkout code
