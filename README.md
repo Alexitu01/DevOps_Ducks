@@ -26,6 +26,19 @@ git push -u origin <branch_name>
 ```
 When the branch has been pushed to GitHub, create a pull request, wait for the workflows to run the code through mandatory checks, wait for review and approvement from code reviwers and lastly merge the branch to main.
 
+## Tech stack
+- C#
+- ASP .NET EF Core
+- ASP .NET Identity
+- ASP .NET Razor Pages
+- Grafana alloy
+- Grafana loki
+- Prometheus
+- Nginx
+- Keepalived
+- Docker & Docker Compose
+- Terraform
+
 ## Legacy branch
 The branch `ITUMiniTwit.Legacy` contains the original Python-based MiniTwit implementation used earlier in the course.  
 It is kept for reference purposes only and is **not under active development**.
