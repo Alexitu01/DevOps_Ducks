@@ -9,6 +9,7 @@ on:
 jobs:
   scp-vm1:
     runs-on: ubuntu-latest
+    secrets: inherit
 
     steps:
       - name: Checkout code
@@ -70,6 +71,7 @@ jobs:
   
   scp-vm2:
     runs-on: ubuntu-latest
+    secrets: inherit
 
     steps:
       - name: Upload docker-compose
