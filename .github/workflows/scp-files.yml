@@ -17,7 +17,7 @@ jobs:
       - name: Upload docker-compose
         uses: appleboy/scp-action@v1
         with:
-          host: ${{ secrets.SSH_HOST1 }}
+          host: ${{ secrets.SSH_HOST1 }},${{ secrets.SSH_HOST2 }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           source: docker-compose.yml
@@ -26,7 +26,7 @@ jobs:
       - name: Upload config.alloy file
         uses: appleboy/scp-action@v1
         with:
-          host: ${{ secrets.SSH_HOST1 }}
+          host: ${{ secrets.SSH_HOST1 }},${{ secrets.SSH_HOST2 }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           source: alloy/config.alloy
@@ -35,7 +35,7 @@ jobs:
       - name: Upload loki-config.yml file
         uses: appleboy/scp-action@v1
         with:
-          host: ${{ secrets.SSH_HOST1 }}
+          host: ${{ secrets.SSH_HOST1 }}, ${{ secrets.SSH_HOST2 }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           source: loki/loki-config.yml
@@ -62,7 +62,7 @@ jobs:
       - name: Upload deploy.sh
         uses: appleboy/scp-action@v1
         with:
-          host: ${{ secrets.SSH_HOST1 }}
+          host: ${{ secrets.SSH_HOST1 }},${{ secrets.SSH_HOST2 }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           source: scripts/deploy.sh
@@ -75,32 +75,32 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Upload docker-compose
-        uses: appleboy/scp-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST2 }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          source: docker-compose.yml
-          target: /root
+     # - name: Upload docker-compose
+     #   uses: appleboy/scp-action@v1
+     #   with:
+     #     host: ${{ secrets.SSH_HOST2 }}
+     #     username: ${{ secrets.SSH_USER }}
+     #     key: ${{ secrets.SSH_KEY }}
+     #     source: docker-compose.yml
+     #     target: /root
           
-      - name: Upload config.alloy file
-        uses: appleboy/scp-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST2 }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          source: alloy/config.alloy
-          target: /root/alloy/
+     # - name: Upload config.alloy file
+     #   uses: appleboy/scp-action@v1
+     #   with:
+     #     host: ${{ secrets.SSH_HOST2 }}
+     #     username: ${{ secrets.SSH_USER }}
+     #    key: ${{ secrets.SSH_KEY }}
+     #     source: alloy/config.alloy
+     #     target: /root/alloy/
       
-      - name: Upload loki-config.yml file
-        uses: appleboy/scp-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST2 }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          source: loki/loki-config.yml
-          target: /root/loki/
+     # - name: Upload loki-config.yml file
+     #   uses: appleboy/scp-action@v1
+     #   with:
+     #     host: ${{ secrets.SSH_HOST2 }}
+     #     username: ${{ secrets.SSH_USER }}
+     #     key: ${{ secrets.SSH_KEY }}
+     #     source: loki/loki-config.yml
+     #     target: /root/loki/
 
         # Creating .env file via SSH to VM in order to use environment variables for database etc.
       - name: Create .env file
@@ -120,11 +120,11 @@ jobs:
             DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
             EOF
         
-      - name: Upload deploy.sh
-        uses: appleboy/scp-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST2 }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          source: scripts/deploy.sh
-          target: /root
+    #  - name: Upload deploy.sh
+    #    uses: appleboy/scp-action@v1
+    #    with:
+    #      host: ${{ secrets.SSH_HOST2 }}
+    #      username: ${{ secrets.SSH_USER }}
+    #      key: ${{ secrets.SSH_KEY }}
+    #      source: scripts/deploy.sh
+    #      target: /root
