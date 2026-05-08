@@ -119,54 +119,6 @@ jobs:
         env:
           USERNAME: ${{secrets.DOCKER_USERNAME}}
         run: docker push "$USERNAME"/minitwit:latest
-      
-      # Add following step to copy docker-compose file into VM in order to avoid running Terraform.tf
-      # https://github.com/appleboy/scp-action
-      - name: Upload docker-compose
-        uses: appleboy/scp-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST1 }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          source: docker-compose.yml
-          target: /root
-        
-      - name: Upload config.alloy file
-        uses: appleboy/scp-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST1 }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          source: alloy/config.alloy
-          target: /root/alloy/
-      
-      - name: Upload loki-config.yml file
-        uses: appleboy/scp-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST1 }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          source: loki/loki-config.yml
-          target: /root/loki/
-          
-
-        # Creating .env file via SSH to VM in order to use environment variables for database etc.
-      - name: Create .env file
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST1 }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
-            cat << EOF > /root/.env
-            MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}
-            MYSQL_USER=${{ secrets.MYSQL_USER }}
-            MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
-            MYSQL_HOST=${{ secrets.MYSQL_HOST }}
-            MYSQL_PORT=${{ secrets.MYSQL_PORT }}
-            MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}
-            DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
-            EOF
           
   deploy-vm2:
     permissions:
@@ -194,54 +146,9 @@ jobs:
           context: .
           push: true
           tags: ${{secrets.DOCKER_USERNAME}}/minitwit
-      
-      # Add following step to copy docker-compose file into VM in order to avoid running Terraform.tf
-      # https://github.com/appleboy/scp-action
-      - name: Upload docker-compose
-        uses: appleboy/scp-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST2 }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          source: docker-compose.yml
-          target: /root
-        
-      - name: Upload config.alloy file
-        uses: appleboy/scp-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST2 }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          source: alloy/config.alloy
-          target: /root/alloy/
-      
-      - name: Upload loki-config.yml file
-        uses: appleboy/scp-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST2 }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          source: loki/loki-config.yml
-          target: /root/loki/
-          
-
-        # Creating .env file via SSH to VM in order to use environment variables for database etc.
-      - name: Create .env file
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST2 }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
-            cat << EOF > /root/.env
-            MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}
-            MYSQL_USER=${{ secrets.MYSQL_USER }}
-            MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
-            MYSQL_HOST=${{ secrets.MYSQL_HOST }}
-            MYSQL_PORT=${{ secrets.MYSQL_PORT }}
-            MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}
-            DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
-            EOF
+  
+  scp-files:
+    uses: ./.github/workflows/scp-files.yml
   
   deploy_all:
     runs-on: ubuntu-latest

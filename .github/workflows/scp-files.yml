@@ -1,0 +1,127 @@
+name: scp files to VMs
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  scp-vm1:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Upload docker-compose
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST1 }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: docker-compose.yml
+          target: /root
+        
+      - name: Upload config.alloy file
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST1 }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: alloy/config.alloy
+          target: /root/alloy/
+      
+      - name: Upload loki-config.yml file
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST1 }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: loki/loki-config.yml
+          target: /root/loki/
+          
+        # Creating .env file via SSH to VM in order to use environment variables for database etc.
+      - name: Create .env file
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST1 }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cat << EOF > /root/.env
+            MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}
+            MYSQL_USER=${{ secrets.MYSQL_USER }}
+            MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
+            MYSQL_HOST=${{ secrets.MYSQL_HOST }}
+            MYSQL_PORT=${{ secrets.MYSQL_PORT }}
+            MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}
+            DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
+            EOF
+        
+      - name: Upload deploy.sh
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST1 }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: scripts/deploy.sh
+          target: /root
+  
+  scp-vm2:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Upload docker-compose
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST2 }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: docker-compose.yml
+          target: /root
+          
+      - name: Upload config.alloy file
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST2 }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: alloy/config.alloy
+          target: /root/alloy/
+      
+      - name: Upload loki-config.yml file
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST2 }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: loki/loki-config.yml
+          target: /root/loki/
+
+        # Creating .env file via SSH to VM in order to use environment variables for database etc.
+      - name: Create .env file
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST2 }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cat << EOF > /root/.env
+            MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}
+            MYSQL_USER=${{ secrets.MYSQL_USER }}
+            MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
+            MYSQL_HOST=${{ secrets.MYSQL_HOST }}
+            MYSQL_PORT=${{ secrets.MYSQL_PORT }}
+            MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}
+            DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
+            EOF
+        
+      - name: Upload deploy.sh
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST2 }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: scripts/deploy.sh
+          target: /root
