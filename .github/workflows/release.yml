@@ -152,6 +152,7 @@ jobs:
   
   deploy_all:
     runs-on: ubuntu-latest
+    needs: [scp-files]
 
     steps:
       - name: Checkout code
