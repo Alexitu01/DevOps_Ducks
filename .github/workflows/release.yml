@@ -123,6 +123,7 @@ jobs:
   scp-files:
     needs: [docker-scout]
     uses: ./.github/workflows/scp-files.yml
+    secrets: inherit
   
   deploy_all:
     runs-on: ubuntu-latest
