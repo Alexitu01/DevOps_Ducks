@@ -1,5 +1,5 @@
 #!/bin/bash
-export DO_TOKEN='digital_ocean_api'
+export DO_TOKEN='digital_ocean_token'
 IP='68.183.242.15'
 ID=$(curl -s http://169.254.169.254/metadata/v1/id)
 HAS_RESERVED_IP=$(curl -s http://169.254.169.254/metadata/v1/reserved_ip/ipv4/active)
