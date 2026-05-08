@@ -25,7 +25,7 @@ for PORT in "${PORTS[@]}"; do
     curl -sf http://127.0.0.1:$PORT || { echo "Health check failed on port $PORT"; exit 1; }
 done
 
-echo "proxy_pass http://${NEW_VERSION};" > active_upstream.conf
+echo "proxy_pass http://${NEW_VERSION};" > /etc/nginx/active_upstream.conf
 sudo nginx -t && sudo systemctl reload nginx
 
 bash change_color.sh
