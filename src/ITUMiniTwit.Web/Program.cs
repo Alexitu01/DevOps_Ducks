@@ -78,9 +78,11 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-//collect http metrics
+// Collect http metrics
 app.UseHttpMetrics();
 
+// Need this for custom metrics to work
+app.Services.GetRequiredService<ILoginMetrics>();
 
 app.UseAuthentication();
 app.UseAuthorization();
