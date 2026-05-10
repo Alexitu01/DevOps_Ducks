@@ -17,7 +17,7 @@ else
 fi
 
 docker compose pull ${NEW_VERSION}server1 ${NEW_VERSION}server2
-docker compose up -d ${NEW_VERSION}server1 ${NEW_VERSION}server2
+docker compose up -d --build ${NEW_VERSION}server1 ${NEW_VERSION}server2
 
 echo "Waiting for healthcheck..."
 sleep 5
