@@ -4,13 +4,13 @@ set -e
 
 CURRENT=$(cat ../current_color)
 
-if ["$CURRENT" = "blue"]; then
+if [ "$CURRENT" = "blue" ]; then
     NEW_VERSION="green"
 else
     NEW_VERSION="blue"
 fi
 
-if ["$NEW_VERSION"="blue"]; then
+if [ "$NEW_VERSION"="blue" ]; then
     PORTS=(8081 8082)
 else
     PORTS=(8083 8084)
@@ -28,4 +28,4 @@ done
 echo "proxy_pass http://${NEW_VERSION};" > /etc/nginx/active_upstream.conf
 sudo nginx -t && sudo systemctl reload nginx
 
-bash change_color.sh
+bash ../change_color.sh
