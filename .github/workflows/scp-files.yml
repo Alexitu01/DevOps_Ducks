@@ -1,8 +1,6 @@
 name: scp files to VMs
 
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
   workflow_call:
 
@@ -21,6 +19,15 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           source: docker-compose.yml
+          target: /root
+      
+      - name: Upload prometheus.yml file
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST1 }},${{ secrets.SSH_HOST2 }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: Moniter/Prometheus/prometheus.yml
           target: /root
         
       - name: Upload config.alloy file

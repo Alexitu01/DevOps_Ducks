@@ -8,10 +8,6 @@ on:
   pull_request:
     branches: [ main ]
   workflow_dispatch:
-  
-env:
-  VM1_HOST: ${{ secrets.SSH_HOST1 }}
-  VM2_HOST: ${{ secrets.SSH_HOST2 }}
 
 jobs:
   release:
@@ -135,7 +131,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Run deploy script
-        working-directory: ./scripts
-        run: bash deploy_all.sh
-
+      - name: Run deploy script vm1
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST1 }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd scripts
+            bash deploy.sh
+      
+      - name: Run deploy script vm2
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST2 }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd scripts
+            bash deploy.sh
