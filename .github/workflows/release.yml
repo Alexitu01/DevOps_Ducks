@@ -8,10 +8,6 @@ on:
   pull_request:
     branches: [ main ]
   workflow_dispatch:
-  
-env:
-  VM1_HOST: ${{ secrets.SSH_HOST1 }}
-  VM2_HOST: ${{ secrets.SSH_HOST2 }}
 
 jobs:
   release:
@@ -137,5 +133,8 @@ jobs:
       
       - name: Run deploy script
         working-directory: ./scripts
+        env:
+          VM1_HOST: ${{ secrets.SSH_HOST1 }}
+          VM2_HOST: ${{ secrets.SSH_HOST2 }}
         run: bash deploy_all.sh
 
