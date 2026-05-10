@@ -2,7 +2,7 @@
 
 set -e
 
-CURRENT=$(cat current_color)
+CURRENT=$(cat ../current_color)
 
 if ["$CURRENT" = "blue"]; then
     NEW_VERSION="green"
