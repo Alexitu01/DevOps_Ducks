@@ -137,4 +137,3 @@ jobs:
           VM1_HOST: ${{ secrets.SSH_HOST1 }}
           VM2_HOST: ${{ secrets.SSH_HOST2 }}
         run: bash deploy_all.sh
-
