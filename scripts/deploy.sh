@@ -28,4 +28,4 @@ done
 echo "proxy_pass http://${NEW_VERSION};" | sudo tee /etc/nginx/active_upstream.conf > /dev/null
 sudo nginx -t && sudo systemctl reload nginx
 
-bash ../change_color.sh
+echo "$NEW_VERSION" > ../current_color
