@@ -11,6 +11,7 @@ using ITUMiniTwit.Core.Models;
 using ITUMiniTwit.Web.Areas.Identity.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Prometheus;
+using MySql.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
