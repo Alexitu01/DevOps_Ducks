@@ -3,14 +3,37 @@
 ## Introduction
 
 ## System's Perspective
+
 Description and illustration of:
 1. Design and architecture of your ITU-MiniTwit systems.
 2. All dependencies of your ITU-MiniTwit systems on all levels of abstraction and development stages. That is, list and briefly describe all technologies and tools you applied and depend on.
 3. Describe the current state of your systems, for example using results of static analysis and quality assessments
+\
+This chapter outlines the system structure of our MiniTwit application and its current dependencies. The current system state will be illustrated and explained in detail. 
 
 
 ### System Structure
 - Design and architecture
+[Insert architecture Diagram] 
+
+#### Application
+MiniTwit is an ASP.NET Core web application based on the earlier 'Chirp' project: It extendeds the support for both browser-based interaction and API-based simulator traffic. The application is structured into presentation, service, and repository layers. Razor Pages handle the user-facing web interface, while controllers expose API endpoints used to handle simulator traffic.
+
+For persistence, the application uses Entity Framework Core with a MySQL database hosted on Aiven instead of the earlier used SQLite setup from Chirp. All deployed application containers share the same database through a common connection string. This allows multiple running instances of the application to serve requests while persisting data in the same central database.
+
+- Possibly Talk about LoginMetrics + Add other Metrics.
+
+
+
+
+#### Infrastructure
+
+
+
+#### Monitoring and Logging
+
+
+
 ### Dependencies
 - List of dependencies
 
