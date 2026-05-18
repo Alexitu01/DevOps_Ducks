@@ -91,3 +91,24 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           source: scripts/deploy.sh
           target: /root
+
+      - name: Upload nginx config
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST1 }},${{ secrets.SSH_HOST2 }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: nginx/minitwit.conf
+          target: /root
+
+      - name: Install nginx config
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST1 }},${{ secrets.SSH_HOST2 }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            sudo cp /root/nginx/minitwit.conf /etc/nginx/sites-available/minitwit
+            sudo ln -sf /etc/nginx/sites-available/minitwit /etc/nginx/sites-enabled/minitwit
+            sudo rm -f /etc/nginx/sites-enabled/default
+            sudo nginx -t && sudo systemctl reload nginx

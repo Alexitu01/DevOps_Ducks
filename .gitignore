@@ -7,6 +7,13 @@
 .env
 *.token
 
+# Terraform
+terraform.tfstate
+terraform.tfstate.*
+.terraform/
+*.tfvars
+!example.tfvars
+
 # User-specific files
 *.rsuser
 *.suo
