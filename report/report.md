@@ -28,7 +28,7 @@ The application is wrapped within a container and joined with monitoring and log
 
 
 
-#### Infrastructure [EMPTY] + [Needs-Diagram]
+#### Infrastructure [WRITTEN] [Needs-Diagram]
 The production system is hosted on two DigitalOcean droplets (Virtual Machines). The droplets contain the runtime environment for the application while supporting horizontal scaling and failover. A reserved IP address is used for both droplets, giving the system a single point of entry. Incoming traffic is then distributed by Nginx among the available application instances.
 
 The deployed services are managed with Docker Compose, defining the containers that run in the runtime environment, setting up a shared network and the supporting monitoring and logging systems. The application is deployed as multiple containers, based on the same image. The applications all refer to the same MySQL database hosted on Aiven through a common connection string.
@@ -40,7 +40,14 @@ To support safer deployment, the infrastructure uses a blue-green setup. Two blu
 The infrastructure includes monitoring and logging components such as Prometheus and Grafana, and Alloy and Loki.
 
 
-#### Monitoring and Logging [EMPTY]
+#### Monitoring and Logging [WRITTEN]
+As mentioned, our monitoring was mainly done with Prometheus and Grafana. Via the prometheus.yml file, Prometheus collected metrics from both blue and green containers, while Grafana's UI made it visually structured.
+Prometheus was used to mainly monitor the 'performance' of the different containers. Latency was monitored to make sure that the response time of the application was acceptable - specifically with new deployments.
+The total memory use of dotnet was monitored, to detect unusual resource consumption, and verify that the application was stable for new deployments (by comparing them to the old deployments).
+The number of requests were also monitored to see which endpoints were visited often, and what kind of responses those requests would get. (Although this was not relied upon in this course, - since the simulator used API endpoints - in a real-life scenario this sort of monitoring would be important.)
+
+With the alloy.config file Alloy scraped logs from the containers and passed them to Loki. Loki collected the logs and by using Grafana, the data also became visually structured.
+We used Loki to differentiate between simulator 404 responses and bot 404 responses, making it possible to debug and act upon 'real' failed requests to the webserver API.
 
 
 
