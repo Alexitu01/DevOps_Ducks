@@ -2,7 +2,7 @@
 
 CURRENT=$(cat ./current_color)
 
-if [ "$CURRENT" == "blue" ]; then 
+if [[ "$CURRENT" == "blue" ]]; then 
         NEXT="green"
 else
         NEXT="blue"
