@@ -11,6 +11,7 @@ upstream green {
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
+    server_name devopsducks.studio www.devopsducks.studio;
 
     location / {
         include /etc/nginx/active_upstream.conf;

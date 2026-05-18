@@ -98,7 +98,7 @@ jobs:
           host: ${{ secrets.SSH_HOST1 }},${{ secrets.SSH_HOST2 }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
-          source: nginx/minitwit.conf
+          source: nginx/devopsducks.studio
           target: /root
 
       - name: Install nginx config
@@ -108,7 +108,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            sudo cp /root/nginx/minitwit.conf /etc/nginx/sites-available/minitwit
-            sudo ln -sf /etc/nginx/sites-available/minitwit /etc/nginx/sites-enabled/minitwit
+            sudo cp /root/nginx/devopsducks.studio /etc/nginx/sites-available/devopsducks.studio
+            sudo ln -sf /etc/nginx/sites-available/devopsducks.studio /etc/nginx/sites-enabled/devopsducks.studio
             sudo rm -f /etc/nginx/sites-enabled/default
             sudo nginx -t && sudo systemctl reload nginx

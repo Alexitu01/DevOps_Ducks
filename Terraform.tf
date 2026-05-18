@@ -30,12 +30,12 @@ locals {
     "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg",
     "echo \"deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable\" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null",
     "sudo apt-get update -y",
-    "sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin",
+    "sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin certbot python3-certbot-nginx",
     "sudo systemctl enable docker nginx",
     "sudo systemctl start docker nginx",
   ]
   provision_nginx = [
-    "sudo ln -sf /etc/nginx/sites-available/minitwit /etc/nginx/sites-enabled/minitwit",
+    "sudo ln -sf /etc/nginx/sites-available/devopsducks.studio /etc/nginx/sites-enabled/devopsducks.studio",
     "sudo rm -f /etc/nginx/sites-enabled/default",
     "echo 'proxy_pass http://blue;' | sudo tee /etc/nginx/active_upstream.conf",
     "sudo nginx -t && sudo systemctl reload nginx",
@@ -62,8 +62,8 @@ resource "digitalocean_droplet" "vm1" {
   }
 
   provisioner "file" {
-    source      = "nginx/minitwit.conf"
-    destination = "/etc/nginx/sites-available/minitwit"
+    source      = "nginx/devopsducks.studio"
+    destination = "/etc/nginx/sites-available/devopsducks.studio"
 
     connection {
       type        = "ssh"
@@ -105,8 +105,8 @@ resource "digitalocean_droplet" "vm2" {
   }
 
   provisioner "file" {
-    source      = "nginx/minitwit.conf"
-    destination = "/etc/nginx/sites-available/minitwit"
+    source      = "nginx/devopsducks.studio"
+    destination = "/etc/nginx/sites-available/devopsducks.studio"
 
     connection {
       type        = "ssh"
