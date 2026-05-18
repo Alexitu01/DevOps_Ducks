@@ -4,10 +4,15 @@ terraform {
       source  = "digitalocean/digitalocean"
       version = "~> 2.0"
     }
+    null = {
+      source  = "hashicorp/null"
+      version = "~> 3.0"
+    }
   }
 }
 
 variable "DIGITAL_OCEAN_TOKEN" {}
+variable "KEEPALIVED_PASSWORD" {}
 
 provider "digitalocean" {
   token = var.DIGITAL_OCEAN_TOKEN
@@ -30,7 +35,7 @@ locals {
     "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg",
     "echo \"deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable\" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null",
     "sudo apt-get update -y",
-    "sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin certbot python3-certbot-nginx",
+    "sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin certbot python3-certbot-nginx keepalived",
     "sudo systemctl enable docker nginx",
     "sudo systemctl start docker nginx",
   ]
@@ -189,4 +194,110 @@ resource "digitalocean_reserved_ip" "web" {
 
 output "reserved_ip" {
   value = digitalocean_reserved_ip.web.ip_address
+}
+
+output "vm1_private_ip" {
+  value = digitalocean_droplet.vm1.ipv4_address_private
+}
+
+output "vm2_private_ip" {
+  value = digitalocean_droplet.vm2.ipv4_address_private
+}
+
+resource "null_resource" "keepalived_vm1" {
+  depends_on = [digitalocean_droplet.vm1, digitalocean_droplet.vm2]
+
+  provisioner "file" {
+    content = templatefile("keepalived/keepalived.tpl", {
+      state    = "MASTER"
+      priority = 101
+      src_ip   = digitalocean_droplet.vm1.ipv4_address_private
+      peer_ip  = digitalocean_droplet.vm2.ipv4_address_private
+      password = var.KEEPALIVED_PASSWORD
+    })
+    destination = "/etc/keepalived/keepalived.conf"
+
+    connection {
+      type        = "ssh"
+      user        = "root"
+      private_key = file("~/.ssh/id_rsa")
+      host        = digitalocean_droplet.vm1.ipv4_address
+    }
+  }
+
+  provisioner "file" {
+    source      = "scripts/master.sh"
+    destination = "/etc/keepalived/master.sh"
+
+    connection {
+      type        = "ssh"
+      user        = "root"
+      private_key = file("~/.ssh/id_rsa")
+      host        = digitalocean_droplet.vm1.ipv4_address
+    }
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /etc/keepalived/master.sh",
+      "sudo systemctl enable keepalived",
+      "sudo systemctl restart keepalived",
+    ]
+
+    connection {
+      type        = "ssh"
+      user        = "root"
+      private_key = file("~/.ssh/id_rsa")
+      host        = digitalocean_droplet.vm1.ipv4_address
+    }
+  }
+}
+
+resource "null_resource" "keepalived_vm2" {
+  depends_on = [digitalocean_droplet.vm1, digitalocean_droplet.vm2]
+
+  provisioner "file" {
+    content = templatefile("keepalived/keepalived.tpl", {
+      state    = "BACKUP"
+      priority = 100
+      src_ip   = digitalocean_droplet.vm2.ipv4_address_private
+      peer_ip  = digitalocean_droplet.vm1.ipv4_address_private
+      password = var.KEEPALIVED_PASSWORD
+    })
+    destination = "/etc/keepalived/keepalived.conf"
+
+    connection {
+      type        = "ssh"
+      user        = "root"
+      private_key = file("~/.ssh/id_rsa")
+      host        = digitalocean_droplet.vm2.ipv4_address
+    }
+  }
+
+  provisioner "file" {
+    source      = "scripts/master.sh"
+    destination = "/etc/keepalived/master.sh"
+
+    connection {
+      type        = "ssh"
+      user        = "root"
+      private_key = file("~/.ssh/id_rsa")
+      host        = digitalocean_droplet.vm2.ipv4_address
+    }
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /etc/keepalived/master.sh",
+      "sudo systemctl enable keepalived",
+      "sudo systemctl restart keepalived",
+    ]
+
+    connection {
+      type        = "ssh"
+      user        = "root"
+      private_key = file("~/.ssh/id_rsa")
+      host        = digitalocean_droplet.vm2.ipv4_address
+    }
+  }
 }
