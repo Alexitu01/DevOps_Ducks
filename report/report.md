@@ -52,8 +52,34 @@ We used Loki to differentiate between simulator 404 responses and bot 404 respon
 
 
 
-### Dependencies [EMPTY] + [Needs-Diagram]
-- List of dependencies
+#### Dependencies [EMPTY] + [Needs-Diagram]
+##### .NET
+Within the .NET library we used Entitiy Frameowkr Core as a way to read and write to the databse, while Identity was used as a way to structure the data and used for authentication.
+
+##### Docker / Docker Compose
+Docker was used for conainerising the application and Docker Compose was used to manage services and ensure a shared network.
+hadolint...?
+##### Github Actions
+Github actions managed the pipeline of integrating and deploying the application. 
+
+##### Grafana, Prometheus, Loki, Alloy
+Grafana, Prometheus, Loki, and Alloy were used as the system’s observability stack, supporting monitoring, log collection and storage, and visualization of operational data.
+
+##### Keepalived
+Keepalived was setup as a channel of communication between droplets ensuring failover.
+
+##### Nginx
+Nginx worked like the reverse proxy and also as a Load Balancer, ensuring traffic was handled effectively.
+
+
+##### SonarCloud
+SonarCloud was used to quality check the system.
+
+
+##### MySQL
+Used as the database
+
+
 
 
 ### Current System State [EMPTY] 
