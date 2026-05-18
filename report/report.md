@@ -86,10 +86,12 @@ Things like maintainability and code duplication were only handled if SonarCloud
 
 
 ##### CodeQL
-[Need Information]
+CodeQL mainly identified seucrity issues within the CI/CD worfklow like inside of the Github Actions. No major application-code vulnerabilities were reported by the default analysis. 
 
 ##### Hadolint
-[Need Information]
+Hadolint was used for the Dockerfile for the application. It wrote warnings and errors based on how the Dockerfile was written.
+
+##### Docker-Scout
 
 #### 1.2.c Tests [EMPTY]
 [Need Information]
