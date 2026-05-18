@@ -15,7 +15,7 @@ This chapter outlines the system structure of our MiniTwit application and its c
 ### 1.1 System Structure [ALMOST_WRITTEN] + [Needs-Diagram]
 - Design and architecture
 
-![Systems Diagram](.\Diagrams\DevOps_Systems_Final.drawio.png "Systems Structure Diagram")
+![Systems Diagram](./Diagrams/DevOps_Systems_Final.drawio.png "Systems Structure Diagram")
 
 #### 1.1.a Application [HALF-WRITTEN] 
 MiniTwit is an ASP.NET Core web application based on the earlier 'Chirp' project: It extendeds the support for both browser-based interaction and API-based simulator traffic. Razor Pages handle the user-facing web interface, while controllers expose API endpoints used to handle simulator traffic.
