@@ -101,6 +101,7 @@ Hadolint was used for the Dockerfile for the application. It wrote warnings and 
 
 ## 2. Process' Perspective [EMPTY]
 Clarify how code or other artifacts come from idea to running system. Include the following:
+![CI/CD Pipeline](./Diagrams/CI-CD_Pipeline.drawio.png "CI/CD Pipeline Diagram")
 1. A complete description and illustration of stages and tools included in the CI/CD pipelines, including deployment and release of your systems.
 2. How do you monitor your systems and what precisely do you monitor?
 3. What do you log in your systems and how do you aggregate logs?
