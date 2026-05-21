@@ -61,7 +61,9 @@ A caveat to the CI-CD pipeline is that upon infrastructure changes, the only per
 
 #### 1.3.b Code Quality and Security
 
-SonarCloud scans the application for security, reliability, maintainability, duplicated code, and test coverage. We mainly used it to fix security issues and important maintainability problems. 
+SonarCloud scans the application for security, reliability, maintainability, duplicated code, and test coverage. We mainly used it to fix security issues and important maintainability problems. SonarCloud's quality gate passed on the final version of the system, reporting 0 new issues, 0 security hotspots, and 0 duplication on new code.
+
+![SonarCloud Quality Gate](./Diagrams/SonarCloud.png "SonarCloud Quality Gate passed")
 
 CodeQL is used in the release workflow to find security issues, especially in the application and CI/CD setup. Hadolint checks the Dockerfile for best-practice problems. Docker Scout scans the built Docker image for known vulnerabilities, especially high and critical ones. In our workflow, Docker Scout reports issues but does not block 
 deployment. 
