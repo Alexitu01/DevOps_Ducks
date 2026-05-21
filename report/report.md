@@ -65,8 +65,9 @@ SonarCloud scans the application for security, reliability, maintainability, dup
 
 ![SonarCloud Quality Gate](./Diagrams/SonarCloud.png "SonarCloud Quality Gate passed")
 
-CodeQL is used in the release workflow to find security issues, especially in the application and CI/CD setup. Hadolint checks the Dockerfile for best-practice problems. Docker Scout scans the built Docker image for known vulnerabilities, especially high and critical ones. In our workflow, Docker Scout reports issues but does not block 
-deployment. 
+CodeQL is used in the release workflow to find security issues, especially in the application and CI/CD setup. Hadolint checks the Dockerfile for best-practice problems. Docker Scout scans the built Docker image for known vulnerabilities, especially high and critical ones. In our workflow, Docker Scout reports issues but does not block deployment. The final scan reported 0 critical and 9 high vulnerabilities, all originating from the base image (debian:12-slim) and dependencies rather than application code.
+
+![Docker Scout Vulnerability Scan](./Diagrams/DockerScout.png "Docker Scout scan results")
 
 Codacy, Much like sonarcloud scans the application for risks and bad code; for better coverage.
 
