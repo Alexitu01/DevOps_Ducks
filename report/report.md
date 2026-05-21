@@ -51,6 +51,7 @@ For monitoring and logging, the system uses Prometheus, Grafana, Loki, and Alloy
 
 ### 1.3 Current System State 
 *Authors: [Nick Kjær Christoffersen, Alexander Hvalsøe Holst, Mathias Bardram Johnbeck]*
+
 #### 1.3.a Overview
 
 The current system is in a working and deployable state. Through GitHub Actions, the application can be built, tested, containerized, pushed to Docker Hub, and deployed to the production droplets. The blue-green setup makes deployment safer because a new version can be started before traffic is moved to it. 
@@ -91,7 +92,9 @@ Key artifacts for this chapter include: the [GitHub Actions workflows](../.githu
 *Authors: [Mathias Bardram Johnbeck]*
 
 - Illustration of individual steps in CI/CD pipeline
-![CI/CD Pipeline](./Images/CI-CD_Pipeline.drawio.png "CI/CD Pipeline Diagram")
+
+![CI/CD Pipeline](./Images/CI-CD_Pipeline.drawio.png "CI/CD Pipeline Diagram"){ width=100% }
+
 #### Github actions
 All application changes flow through GitHub Actions. A push or pull request triggers dotnet.yml, which restores dependencies, builds the solution, runs the unit and integration test suites, and performs a scan using SonarCloud and Codacy for code quality; <br> 
 `docker-lint.yml` separately runs Hadolint against the `Dockerfile` when Docker-related files change.  <br> 
@@ -103,6 +106,7 @@ A push to main then triggers release.yml, the delivery pipeline, which runs four
 - the deploy_all job connects to each droplet over SSH and runs `deploy.sh`
 
 #### Docker Compose
+
 The image produced by the pipeline does not run alone. <br> `docker-compose.yml` copied to each droplet by the pipeline, describes how the system is wired together: <br> 
 the four web-server containers (two replicas each of the blue and green deployment colours), and the observability services (Prometheus, Loki, Grafana, and Alloy), all sharing a single Docker bridge network. When `deploy.sh` runs on a droplet, it uses Docker Compose to pull the new image from Docker Hub and start the inactive colour's containers. <br> The database is deliberately excluded from Docker Compose and runs as a managed MySql instance on a third party (Aiven).
 
