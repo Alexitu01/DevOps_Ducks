@@ -100,13 +100,13 @@ jobs:
               | .ip_address
             ')
 
-            ip_count=$(printf '%s\n' "$ips" | sed '/^$/d' | wc -l | tr -d ' ')
-            if [ "$ip_count" -ne 1 ]; then
-              echo "Failed to resolve exactly one public IPv4 address for droplet '$droplet_name' (found $ip_count)." >&2
+            ip=$(printf '%s\n' "$ips" | sed '/^$/d' | head -1)
+            if [ -z "$ip" ]; then
+              echo "Failed to resolve a public IPv4 address for droplet '$droplet_name'." >&2
               exit 1
             fi
 
-            printf '%s\n' "$ips"
+            printf '%s\n' "$ip"
           }
 
           VM1=$(get_public_ipv4 "web-1")
