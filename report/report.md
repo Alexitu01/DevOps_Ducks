@@ -61,7 +61,7 @@ A caveat to the CI-CD pipeline is that upon infrastructure changes, the only per
 
 #### 1.3.b Code Quality and Security
 
-SonarCloud scans the application for security, reliability, maintainability, duplicated code, and test coverage. We mainly used it to fix security issues and important maintainability problems. SonarCloud's quality gate passed on the final version of the system, reporting 0 new issues, 0 security hotspots, and 0 duplication on new code.
+SonarCloud scans the application for security, reliability, maintainability, duplicated code, and test coverage. It was used throughout the project to identify and address issues introduced with new features and changes. The screenshot below shows an example of the quality gate passing on a pull request with no new issues or security hotspots introduced.
 
 ![SonarCloud Quality Gate](./Diagrams/SonarCloud.png "SonarCloud Quality Gate passed")
 
