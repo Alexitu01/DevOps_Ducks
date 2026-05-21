@@ -59,7 +59,8 @@ The system is supported by quality and security tools such as SonarCloud, CodeQL
 
 A caveat to the CI-CD pipeline is that upon infrastructure changes, the only persistant data, is the base database itself, prometheus, loki and grafana volumes are lost, thereby potentially loosing long term logging and montering data that might've been useful, as well as deleting existing Grafana dashboards. 
 
-#### 1.3.b Code Quality and Security
+#### 1.3.b Current Code Quality and Security
+
 
 SonarCloud scans the application for security, reliability, maintainability, duplicated code, and test coverage. It was used throughout the project to identify and address issues introduced with new features and changes. The screenshot below shows an example of the quality gate passing on a pull request with no new issues or security hotspots introduced.
 
@@ -92,7 +93,7 @@ Key artifacts for this chapter include: the [GitHub Actions workflows](../.githu
 - Illustration of individual steps in CI/CD pipeline
 ![CI/CD Pipeline](./Diagrams/CI-CD_Pipeline.drawio.png "CI/CD Pipeline Diagram")
 #### Github actions
-All application changes flow through GitHub Actions. A push or pull request triggers dotnet.yml, which restores dependencies, builds the solution, runs the unit and integration test suites, and performs a SonarCloud scan for code quality; <br> 
+All application changes flow through GitHub Actions. A push or pull request triggers dotnet.yml, which restores dependencies, builds the solution, runs the unit and integration test suites, and performs a scan using SonarCloud and Codacy for code quality; <br> 
 `docker-lint.yml` separately runs Hadolint against the `Dockerfile` when Docker-related files change.  <br> 
 
 A push to main then triggers release.yml, the delivery pipeline, which runs four sequential jobs:  <br> 
@@ -147,7 +148,7 @@ Keepalived daemons on both droplets exchange VRRP heartbeats over the private ne
 Within each droplet, Nginx acts as a reverse proxy and load balancer. The active deployment colour runs as two identical container replicas (e.g. `blueserver1` and `blueserver2`), and Nginx distributes incoming requests across them in round-robin fashion via an upstream block. If one replica becomes unresponsive, Nginx detects the failed upstream and routes solely to the healthy one until it recovers
 
 
-## Reflection Perspective
+## 3 Reflection Perspective
 The biggest issues and how they were solved:
 1. evolution and refactoring
 2. operation, and
@@ -155,26 +156,26 @@ The biggest issues and how they were solved:
 Link back to commit messages, issues, tickets etc.
 Also reflect and describe what was the "DevOps" style of your work. For example, what did you do differently to previous development projects and how did it work?
 
-### Database issues 
+### 3. 1Database issues 
 *Authors: [Alexander Hvalsøe Holst, Victor Hvid Troelsen]*
 
 
 When the application was hosted, the database got wiped twice within the first week. It was thought to be an issue within the MySql image, and the database was simply recovered with old backup data. The second time it happened, it was discovered that it was hacked, which made us aware of the vulnerabilities with exposing the database port. In the `docker-compose.yml` file, we removed the part that hosted the database, and the issue did not reoccur ( 
 0e005dd ).
 
-### VM Corruption
+### 3.2 VM Corruption
 *Authors: [Alexander Hvalsøe Holst]*
 
 In the middle of the course the main VM got 'corrupted'. The causes were (and are) unkown even with extensive debugging. The first time we tried restarting the VM, and even sending a 'ticket' to Digital Ocean. After a week of trying to recover the specific droplet, it was decided that 'just' creating a new droplet was the best solutiom.
 This made the team more focused on simply getting the system back up, rather than trying to find the "right" procedures.
 
-### Spillover
+### 3.3 Spillover
 *Authors: [Alexander Hvalsøe Holst, Mathias Bardram Johnbeck]*
 
 In this course there were some issues with implementation, meaning; new functionality requirements were added, while older requirements were still not fully implemented. We mitigated this with a focus of efficient division of labour, in an attempt to reduce bottlenecks and iddling. As such some features took a backseat even if they technically should have been implemented first.
 
 
-### DevOps Reflection
+### 3.4 DevOps Reflection
 
 *Authors: [Victor Hvid Troelsen]*
   
@@ -190,17 +191,17 @@ The main friction was pipeline overhead. For small fixes, waiting for the full C
 
 Overall, the biggest practical difference was not any single tool, but the combination of automation and observability: broken builds, failing containers, and unusual traffic patterns became visible events rather than silent failures.
 
-## Use of Generative AI
+## 4 Use of Generative AI
 Generative AI services such as OpenAI and Anthropic's Claude, were used mainly for issues that weren't well documented, for debugging, and for help with explaining tool documentation.
 
-### For niche issues (undocumented) 
+### 4.1 Niche issues (undocumented) 
 *Authors: [Alexander Hvalsøe Holst]*
 
 When the database got wiped, as mentioned before, AI was used to pinpoint what aspect of the software allowed this. It identified the issue as an exposed port in the `docker-compose.yml` file, and we removed the exposed port.
 
 In the setup of the `alloy.config` file we used generative AI to 'hint' as to what aspect of the code was wrong, since alloy wasn't scraping the correct logs. After learning the main issue, we used documentation to find the correct setup for scraping the logs we needed.
 
-### CLI Commands for debugging 
+### 4.2 CLI Commands for debugging 
 *Authors: [Alexander Hvalsøe Holst]*
 
 When setting up Nginx and Keepalived, we used generative AI to give debugging CLI commands, to specifically look at logs in Nginx, Keepalived and Docker. This helped us identify bugs more efficiently.
