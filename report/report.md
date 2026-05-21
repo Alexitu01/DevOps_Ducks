@@ -57,12 +57,18 @@ The current system is in a working and deployable state. Through GitHub Actions,
 
 The system is supported by quality and security tools such as SonarCloud, CodeQL, Hadolint, and Docker Scout. These helped find issues in the code, workflows, Dockerfile, and Docker image. Some smaller code quality issues still remain, and the GUI sometimes has latency or stability issues when communicating with the web server.
 
+A caveat to the CI-CD pipeline is that upon infrastructure changes, the only persistant data, is the base database itself, prometheus, loki and grafana volumes are lost, thereby potentially loosing long term logging and montering data that might've been useful, as well as deleting existing Grafana dashboards. 
+
 #### 1.3.b Code Quality and Security
 
-SonarCloud scans the application for security, reliability, maintainability, duplicated code, and test coverage. We mainly used it to fix security issues and important maintainability problems. 
+SonarCloud scans the application for security, reliability, maintainability, duplicated code, and test coverage. We mainly used it to fix security issues and important maintainability problems. SonarCloud's quality gate passed on the final version of the system, reporting 0 new issues, 0 security hotspots, and 0 duplication on new code.
+
+![SonarCloud Quality Gate](./Diagrams/SonarCloud.png "SonarCloud Quality Gate passed")
 
 CodeQL is used in the release workflow to find security issues, especially in the application and CI/CD setup. Hadolint checks the Dockerfile for best-practice problems. Docker Scout scans the built Docker image for known vulnerabilities, especially high and critical ones. In our workflow, Docker Scout reports issues but does not block 
 deployment. 
+
+Codacy, Much like sonarcloud scans the application for risks and bad code; for better coverage.
 
 #### 1.3.c Tests
 
@@ -121,13 +127,13 @@ We used Loki to differentiate between simulator 404 responses and bot 404 respon
 
 Security was handled in several parts of the system. The DigitalOcean firewall only opens the ports needed for SSH, HTTP, HTTPS, and Grafana. The application containers are mapped to host ports internally, but these ports are not opened in the firewall. Incoming traffic instead goes through Nginx.
 
-Nginx works as a reverse proxy in front of the remote virtual machines. This gives the system one public entry point. Keepalived is used to handle failovers and makes it easier to control traffic between blue and green deployments.
+Nginx works as a reverse proxy in front of the remote virtual machines. This gives the system one public entry point. Keepalived is used to handle failover, starting the backup virtual machine in case the primary is down.
 
 Secrets are not stored in the source code. Database credentials, Docker Hub credentials, SSH keys, and deployment values are stored as GitHub Secrets. During deployment, the workflow writes the needed `.env` file on the droplets.
 
-The application also contains HTTPS-related setup. ASP.NET Core uses HTTPS redirection and HSTS in production, and Terraform installs Certbot and opens port 443. However, the checked-in Nginx configuration only shows the HTTP server block, so the final production HTTPS setup is not fully visible from the repository.
+TLS is fully automated through Terraform. Certbot and the necessary plugins are installed as part of VM provisioning, and a non-interactive certbot run obtains and installs a Let's Encrypt certificate for the domain. Nginx is configured to serve traffic over HTTPS and redirect all HTTP requests to HTTPS. Port 443 is opened in the DigitalOcean firewall to allow this traffic.
 
-Security checks are included in the pipeline. SonarCloud, CodeQL and Codacy checks both code quality and security issues, while Docker Scout scans the Docker image for known vulnerabilities.
+Security checks are included in the pipeline. SonarCloud, CodeQL, and Codacy check both code quality and security issues, while Docker Scout scans the Docker image for known vulnerabilities.
 
 
 ### 2.5 Availability
