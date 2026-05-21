@@ -1,5 +1,5 @@
 vrrp_script chk_nginx {
-    script "pidof nginx"
+    script "pgrep nginx"
     interval 2
     weight -101
     fall 2

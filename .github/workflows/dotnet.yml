@@ -45,6 +45,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
+          $ErrorActionPreference = 'Stop'
           ./sonar/scanner/dotnet-sonarscanner begin /k:"Alexitu01_DevOps_Ducks" /o:"alexitu01" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.host.url="https://sonarcloud.io"
           dotnet build
           ./sonar/scanner/dotnet-sonarscanner end /d:sonar.token="$env:SONAR_TOKEN"
