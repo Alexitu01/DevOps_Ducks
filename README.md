@@ -42,23 +42,23 @@ When the branch has been pushed to GitHub, create a pull request, wait for the w
 ## Demos
 
 ### Monitoring Dashboard
-![Monitoring Dashboard](Images/Monitoring-dashboard.gif)
+![Monitoring Dashboard](report/Images/Monitoring-dashboard.gif)
 
 ### Logging Dashboard
-![Logging Dashboard](Images/Logging-dashboard.gif)
+![Logging Dashboard](report/Images/Logging-dashboard.gif)
 
 ### Infrastructure as Code
-![IaC Demo](Images/IaC-Demo.gif)
+![IaC Demo](report/Images/IaC-Demo.gif)
 
 ### CI/CD Pipeline
 #### Part 1
-![CI/CD Demo Part 1](Images/CICD_demo-part1.gif)
+![CI/CD Demo Part 1](report/Images/CICD_demo-part1.gif)
 #### Part 2
-![CI/CD Demo Part 2](Images/CICD_demo-part2.gif)
+![CI/CD Demo Part 2](report/Images/CICD_demo-part2.gif)
 #### Part 3
-![CI/CD Demo Part 3](Images/CICD_demo-part3.gif)
+![CI/CD Demo Part 3](report/Images/CICD_demo-part3.gif)
 #### Part 4
-![CI/CD Demo Part 4](Images/CICD_demo-part4.gif)
+![CI/CD Demo Part 4](report/Images/CICD_demo-part4.gif)
 
 ## Legacy branch
 The branch `ITUMiniTwit.Legacy` contains the original Python-based MiniTwit implementation used earlier in the course.  
