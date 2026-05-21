@@ -17,6 +17,7 @@ else
 fi
 
 docker compose pull ${NEW_VERSION}server1 ${NEW_VERSION}server2
+docker compose up -d prometheus grafana loki alloy
 docker compose up -d --build ${NEW_VERSION}server1 ${NEW_VERSION}server2 --remove-orphans
 
 echo "Waiting for healthcheck..."
