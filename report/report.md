@@ -71,7 +71,8 @@ CodeQL is used in the release workflow to find security issues, especially in th
 ![Docker Scout Vulnerability Scan](./Images/DockerScout.png "Docker Scout scan results")
 
 Codacy, Much like sonarcloud scans the application for risks and bad code; for better coverage. Although 18 issues were found in the current solution, we concluded that they were not critical because they related to third-party references in GitHub Actions.
-![Docker Scout Vulnerability Scan](./Images/Codacy.png "Codacy scan results")
+
+![Codacy scan results](./Images/Codacy.png "Codacy scan results"){ width=100% }
 
 #### 1.3.c Tests
 

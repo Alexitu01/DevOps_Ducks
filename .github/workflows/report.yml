@@ -24,7 +24,7 @@ jobs:
         run: |
             if ls report/*.md 1>/dev/null 2>&1; then
               mkdir -p report/build
-              pandoc report/*.md --resource-path=report -o report/build/BSc_group_a.pdf
+              pandoc report/*.md --resource-path=report -V subparagraph -o report/build/BSc_group_a.pdf
               echo "report_built=true" >> "$GITHUB_ENV"
             else
               echo "No markdown files found in report/, skipping build"
