@@ -1,8 +1,8 @@
-using ITUMiniTwit.Infrastructure.ITUMiniTwit.Repositories;
-using ITUMiniTwit.Core.Models;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using ITUMiniTwit.Core.Models;
+using ITUMiniTwit.Infrastructure.ITUMiniTwit.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace ITUMiniTwit.Infrastructure.Tests;
@@ -34,11 +34,11 @@ public class CheepsPageTest
         var repo = new CheepRepository(context);
 
         // Act
-        var result = repo.GetCheeps(1, 1); 
+        var result = repo.GetCheeps(1, 1);
 
         // Assert
         Assert.Single(result);
         Assert.Equal("Second Cheep", result[0].Text);
-        Assert.Equal("Daid", result[0].Author); 
+        Assert.Equal("Daid", result[0].Author);
     }
 }

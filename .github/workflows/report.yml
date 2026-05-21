@@ -1,0 +1,26 @@
+name: Convert report to pdf
+
+on:
+  push: [ main ]
+  workflow_dispatch:
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Convert report
+        uses: baileyjm02/markdown-to-pdf@1be26775add5f94fb55d4a2ce36ff7cad23b8dd0
+        with:
+          input_path: report/report.md
+          output_dir: report/build
+          images_dir: report/images
+          build_html: false
+
+      - name: Upload pdf
+        uses: actions/upload-artifact@v3
+        with:
+          name: BSc_group_a.pdf
+          path: report/build 

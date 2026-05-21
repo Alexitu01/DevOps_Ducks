@@ -1,15 +1,15 @@
-using ITUMiniTwit.Infrastructure.ITUMiniTwit.Service;
-using ITUMiniTwit.Infrastructure.ITUMiniTwit.Repositories;
-using ITUMiniTwit.Infrastructure.ITUMiniTwit.Moniter;
-using ITUMiniTwit.Infrastructure;
-using ITUMiniTwit.Web;
-using Microsoft.EntityFrameworkCore;
-using Pomelo.EntityFrameworkCore.MySql;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using ITUMiniTwit.Core.Models;
+using ITUMiniTwit.Infrastructure;
+using ITUMiniTwit.Infrastructure.ITUMiniTwit.Moniter;
+using ITUMiniTwit.Infrastructure.ITUMiniTwit.Repositories;
+using ITUMiniTwit.Infrastructure.ITUMiniTwit.Service;
+using ITUMiniTwit.Web;
 using ITUMiniTwit.Web.Areas.Identity.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Pomelo.EntityFrameworkCore.MySql;
 using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,20 +25,21 @@ builder.Services.AddSingleton<ILoginMetrics, LoginMetrics>();
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 var serverVersion = new MySqlServerVersion(new Version(8, 0, 29));
 
-if(builder.Environment.IsDevelopment())
+if (builder.Environment.IsDevelopment())
 {
     builder.Services.AddDbContext<ITUMiniTwitDBContext>(options => options.UseSqlite(connectionString));
 }
 else if (connectionString != null)
 {
-     builder.Services.AddDbContext<ITUMiniTwitDBContext>(options => options.UseMySql(connectionString, serverVersion));
+    builder.Services.AddDbContext<ITUMiniTwitDBContext>(options => options.UseMySql(connectionString, serverVersion));
 }
 else
 {
     throw new Exception("Connectionstring is null");
 }
 
-builder.Services.AddDefaultIdentity<Author>(options => {
+builder.Services.AddDefaultIdentity<Author>(options =>
+{
     options.SignIn.RequireConfirmedAccount = false;
 
     // Relax password policy for simulator
@@ -48,7 +49,8 @@ builder.Services.AddDefaultIdentity<Author>(options => {
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequiredLength = 1;
     options.User.AllowedUserNameCharacters =
-        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 -_.'";}
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 -_.'";
+}
     )
     .AddEntityFrameworkStores<ITUMiniTwitDBContext>();
 builder.Services

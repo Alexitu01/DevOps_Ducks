@@ -323,9 +323,9 @@ public class registerController : ControllerBase
             }
             return NoContent();
         }
-        catch (DbUpdateException e )
+        catch (DbUpdateException e)
         {
-            return StatusCode(400, new{status = 0, error_msg = "Bad Request" + e});
+            return StatusCode(400, new { status = 0, error_msg = "Bad Request" + e });
         }
     }
 

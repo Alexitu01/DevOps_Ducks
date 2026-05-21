@@ -37,22 +37,13 @@ locals {
     "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg",
     "echo \"deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable\" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null",
     "sudo apt-get update -y",
-    "sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin certbot python3-certbot-nginx python3-certbot-dns-digitalocean keepalived",
+    "sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin certbot python3-certbot-nginx keepalived",
     "sudo systemctl enable docker nginx",
     "sudo systemctl start docker nginx",
   ]
-  provision_nginx_temp = [
-    "printf 'server {\\n    listen 80 default_server;\\n    listen [::]:80 default_server;\\n    server_name devopsducks.studio www.devopsducks.studio;\\n}\\n' | sudo tee /etc/nginx/sites-available/devopsducks.studio",
+  provision_nginx = [
     "sudo ln -sf /etc/nginx/sites-available/devopsducks.studio /etc/nginx/sites-enabled/devopsducks.studio",
     "sudo rm -f /etc/nginx/sites-enabled/default",
-    "sudo nginx -t && sudo systemctl reload nginx",
-  ]
-  provision_certbot = [
-    "echo 'dns_digitalocean_token = ${var.DIGITAL_OCEAN_TOKEN}' | sudo tee /etc/letsencrypt/digitalocean.ini",
-    "sudo chmod 600 /etc/letsencrypt/digitalocean.ini",
-    "sudo certbot certonly --authenticator dns-digitalocean --dns-digitalocean-credentials /etc/letsencrypt/digitalocean.ini -d devopsducks.studio -d www.devopsducks.studio --non-interactive --agree-tos --email victor.troelsen@gmail.com",
-  ]
-  provision_nginx_final = [
     "echo 'proxy_pass http://blue;' | sudo tee /etc/nginx/active_upstream.conf",
     "sudo nginx -t && sudo systemctl reload nginx",
   ]
@@ -76,28 +67,6 @@ resource "digitalocean_droplet" "vm1" {
     }
   }
 
-  provisioner "remote-exec" {
-    inline = local.provision_nginx_temp
-
-    connection {
-      type        = "ssh"
-      user        = "root"
-      private_key = local.ssh_private_key
-      host        = self.ipv4_address
-    }
-  }
-
-  provisioner "remote-exec" {
-    inline = local.provision_certbot
-
-    connection {
-      type        = "ssh"
-      user        = "root"
-      private_key = local.ssh_private_key
-      host        = self.ipv4_address
-    }
-  }
-
   provisioner "file" {
     source      = "nginx/devopsducks.studio"
     destination = "/etc/nginx/sites-available/devopsducks.studio"
@@ -111,7 +80,7 @@ resource "digitalocean_droplet" "vm1" {
   }
 
   provisioner "remote-exec" {
-    inline = local.provision_nginx_final
+    inline = local.provision_nginx
 
     connection {
       type        = "ssh"
@@ -140,28 +109,6 @@ resource "digitalocean_droplet" "vm2" {
     }
   }
 
-  provisioner "remote-exec" {
-    inline = local.provision_nginx_temp
-
-    connection {
-      type        = "ssh"
-      user        = "root"
-      private_key = local.ssh_private_key
-      host        = self.ipv4_address
-    }
-  }
-
-  provisioner "remote-exec" {
-    inline = local.provision_certbot
-
-    connection {
-      type        = "ssh"
-      user        = "root"
-      private_key = local.ssh_private_key
-      host        = self.ipv4_address
-    }
-  }
-
   provisioner "file" {
     source      = "nginx/devopsducks.studio"
     destination = "/etc/nginx/sites-available/devopsducks.studio"
@@ -175,7 +122,7 @@ resource "digitalocean_droplet" "vm2" {
   }
 
   provisioner "remote-exec" {
-    inline = local.provision_nginx_final
+    inline = local.provision_nginx
 
     connection {
       type        = "ssh"

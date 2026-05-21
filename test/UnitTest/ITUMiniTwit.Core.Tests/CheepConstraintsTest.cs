@@ -1,12 +1,12 @@
 using System;
 using System.Linq;
-using Xunit;
+using ITUMiniTwit.Core;
+using ITUMiniTwit.Core.Models;
+using ITUMiniTwit.Infrastructure;
+using ITUMiniTwit.Infrastructure.ITUMiniTwit.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.InMemory;
-using ITUMiniTwit.Core.Models;
-using ITUMiniTwit.Infrastructure.ITUMiniTwit.Repositories;
-using ITUMiniTwit.Core;
-using ITUMiniTwit.Infrastructure;
+using Xunit;
 
 namespace ITUMiniTwit.Core.Tests
 {
@@ -25,7 +25,7 @@ namespace ITUMiniTwit.Core.Tests
             _context = new ITUMiniTwitDBContext(options);
             _authorRepository = new AuthorRepository(_context);
             _cheepRepository = new CheepRepository(_context);
-            _authorRepository.AddAuthor("Daid","daid@email.dk");
+            _authorRepository.AddAuthor("Daid", "daid@email.dk");
         }
 
         [Fact]

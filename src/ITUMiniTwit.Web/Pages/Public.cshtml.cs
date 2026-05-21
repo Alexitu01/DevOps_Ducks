@@ -1,9 +1,9 @@
+using System.ComponentModel.DataAnnotations;
+using ITUMiniTwit.Core;
+using ITUMiniTwit.Core.Models;
+using ITUMiniTwit.Infrastructure.ITUMiniTwit.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using ITUMiniTwit.Infrastructure.ITUMiniTwit.Service;
-using ITUMiniTwit.Core;
-using System.ComponentModel.DataAnnotations;
-using ITUMiniTwit.Core.Models;
 
 namespace ITUMiniTwit.Web.Pages
 {
@@ -13,7 +13,7 @@ namespace ITUMiniTwit.Web.Pages
         private readonly ICheepService _service;
         private readonly IAuthorService _authorService;
         public List<CheepDto> Cheeps { get; set; } = new();
-        
+
         public List<Author> Following { get; set; } = new();
 
         [BindProperty]
@@ -30,10 +30,10 @@ namespace ITUMiniTwit.Web.Pages
         {
             if (_service is null)
                 throw new InvalidOperationException("PublicModel: _service is null in OnGet (unit test");
-            
+
             int currentPage = page ?? pageNumber ?? 1;
             const int pageSize = 32;
-            
+
             Cheeps = _service.GetCheeps(currentPage, pageSize);
 
             if (User?.Identity?.IsAuthenticated ?? false)
@@ -41,7 +41,7 @@ namespace ITUMiniTwit.Web.Pages
                 var userName = User.Identity!.Name!;
                 Following = _authorService.GetFollowing(userName).Result;
             }
-            
+
             ViewData["CurrentPage"] = currentPage;
             return Page();
         }
@@ -49,13 +49,13 @@ namespace ITUMiniTwit.Web.Pages
         public IActionResult OnPost([FromQuery] int? page = 1, int? pageNumber = null)
         {
             int currentPage = page ?? pageNumber ?? 1;
-        
+
             if (!(User?.Identity?.IsAuthenticated ?? false))
                 return Unauthorized();
 
             // Manual validation in addition to data annotations
             var trimmed = Text?.Trim() ?? string.Empty;
-            
+
             if (string.IsNullOrWhiteSpace(trimmed))
                 ModelState.AddModelError(nameof(Text), "Cheep must not be empty.");
             else if (trimmed.Length > 160)
@@ -64,13 +64,13 @@ namespace ITUMiniTwit.Web.Pages
             if (!ModelState.IsValid)
             {
                 Cheeps = _service.GetCheeps(currentPage, 32);
-                
+
                 if (User?.Identity?.IsAuthenticated ?? false)
                 {
                     var userName = User.Identity!.Name!;
                     Following = _authorService.GetFollowing(userName).Result;
                 }
-                
+
                 ViewData["CurrentPage"] = currentPage;
                 return Page();
             }
@@ -80,7 +80,7 @@ namespace ITUMiniTwit.Web.Pages
             // Post‑Redirect‑Get pattern prevents duplicate submissions on refresh
             return Redirect($"?page={currentPage}");
         }
-        
+
         public IActionResult OnPostFollow(string authorToFollow, [FromQuery] int? page = 1, int? pageNumber = null)
         {
             if (!(User?.Identity?.IsAuthenticated ?? false))
@@ -92,7 +92,7 @@ namespace ITUMiniTwit.Web.Pages
             int currentPage = page ?? pageNumber ?? 1;
             return Redirect($"?page={currentPage}");
         }
-        
+
         public IActionResult OnPostUnfollow(string authorToUnfollow, [FromQuery] int? page = 1, int? pageNumber = null)
         {
             if (!(User?.Identity?.IsAuthenticated ?? false))
@@ -104,7 +104,7 @@ namespace ITUMiniTwit.Web.Pages
             int currentPage = page ?? pageNumber ?? 1;
             return Redirect($"?page={currentPage}");
         }
-        
+
         public IActionResult OnPostLike(int cheepId, [FromQuery] int? page = 1, int? pageNumber = null)
         {
             if (!(User?.Identity?.IsAuthenticated ?? false))

@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using ITUMiniTwit.Infrastructure.ITUMiniTwit.Service;
 using ITUMiniTwit.Core;
 using ITUMiniTwit.Core.Models;
-using Microsoft.EntityFrameworkCore;
+using ITUMiniTwit.Infrastructure.ITUMiniTwit.Service;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
 namespace ITUMiniTwit.Web.Pages
 {
@@ -23,7 +23,7 @@ namespace ITUMiniTwit.Web.Pages
 
         public Author? CurrentUser { get; set; }
         public List<CheepDto> Cheeps { get; set; } = new();
-        
+
         public List<Author> Following { get; set; } = new();
         public List<Author> Followers { get; set; } = new();
 
@@ -42,29 +42,29 @@ namespace ITUMiniTwit.Web.Pages
 
             if (CurrentUser is null)
                 return;
-            
+
             var userName = CurrentUser.UserName;
             if (string.IsNullOrEmpty(userName))
                 return;
-            
+
             const int pageSize = 32;
             int currentPage = page ?? 1;
 
             Cheeps = _service.GetCheepsFromAuthor(userName, currentPage, pageSize);
             ViewData["CurrentPage"] = currentPage;
-                    
+
             Following = CurrentUser.Following.ToList();
             Followers = CurrentUser.Followers.ToList();
         }
-         public async Task<IActionResult> OnPostUnfollow(string authorToUnfollow, string author)
-            {
-                if (!(User?.Identity?.IsAuthenticated ?? false))
-                    return Unauthorized();
-    
-                var follower = User.Identity!.Name!;
-                await _authorService.Unfollow(follower, authorToUnfollow);
-                
-                return RedirectToPage("/AboutMe", new { author = author });
-            }
+        public async Task<IActionResult> OnPostUnfollow(string authorToUnfollow, string author)
+        {
+            if (!(User?.Identity?.IsAuthenticated ?? false))
+                return Unauthorized();
+
+            var follower = User.Identity!.Name!;
+            await _authorService.Unfollow(follower, authorToUnfollow);
+
+            return RedirectToPage("/AboutMe", new { author = author });
+        }
     }
 }

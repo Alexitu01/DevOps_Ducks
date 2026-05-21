@@ -1,8 +1,8 @@
-using ITUMiniTwit.Core;
-using ITUMiniTwit.Core.Models;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ITUMiniTwit.Core;
+using ITUMiniTwit.Core.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ITUMiniTwit.Infrastructure.ITUMiniTwit.Repositories;
@@ -28,12 +28,12 @@ public sealed class CheepRepository : ICheepRepository
     /// <returns></returns>
     public List<CheepDto> GetCheeps(int page, int pageSize)
     {
-     var cheeps = _context.Cheeps
-            .Include(c => c.Author)
-            .OrderByDescending(c => c.TimeStamp)
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToList();
+        var cheeps = _context.Cheeps
+               .Include(c => c.Author)
+               .OrderByDescending(c => c.TimeStamp)
+               .Skip((page - 1) * pageSize)
+               .Take(pageSize)
+               .ToList();
 
         return cheeps
             .Select(c => new CheepDto
@@ -97,7 +97,7 @@ public sealed class CheepRepository : ICheepRepository
         if (pageSize < 1) throw new ArgumentOutOfRangeException(nameof(pageSize), "Page size must be >= 1.");
 
         return await _context.Cheeps
-            .OrderByDescending(c => c.TimeStamp) 
+            .OrderByDescending(c => c.TimeStamp)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .AsNoTracking()
@@ -150,12 +150,12 @@ public sealed class CheepRepository : ICheepRepository
         if (string.IsNullOrWhiteSpace(cheepdto.Author))
             throw new ArgumentException("Author (user name) is required.", nameof(cheepdto));
 
-        
+
         var author = _context.Authors.SingleOrDefault(a => a.UserName == cheepdto.Author);
         if (author is null)
             throw new InvalidOperationException($"Author ' {cheepdto.Author} not found");
-                
-    
+
+
         var cheep = new Cheep
         {
             Text = text,
@@ -166,7 +166,7 @@ public sealed class CheepRepository : ICheepRepository
         _context.Cheeps.Add(cheep);
         _context.SaveChanges();
     }
-    
+
     /// <summary>
     /// Like or unlike a cheep by a specific author
     /// Prevents multiple likes and unlikes by the same author on the same cheep
