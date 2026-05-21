@@ -1,4 +1,4 @@
-# DevOps Ducks - Group 1
+# DevOps Ducks - Group a
 ## 1. System's Perspective
 *Authors: [Nick Kjær Christoffersen]*
 
@@ -18,9 +18,9 @@ Key artifacts for this chapter include: the [.NET solution](../ITUMiniTwit.Razor
 
 ITUMiniTwit is an ASP.NET Core web application based on the earlier 'Chirp' project. The application supports both browser-based interaction and API-based simulator traffic. Razor Pages are used for the user-facing web interface, while ASP.NET Core controllers expose API endpoints such as `/msgs`, `/fllws`, `/register`, and `/latest`.
 
-The application is structured into separate projects for web, infrastructure, and core domain logic. The web project contains the Razor Pages, Identity pages, controllers, and application startup configuration. The infrastructure project contains the Entity Framework Core database context, repositories, services, and monitoring codes. The core project contains the main domain models, such as `Author`, `Cheep`, and `CheepLike`. 
+The application is structured using the Onion Architecture, meaning the code is separated into projects for web, infrastructure, and core domain logic. The web project contains the Razor Pages including Identity pages, controllers, and application startup configuration. The infrastructure project contains the Entity Framework Core (EF Core) database context, repositories, services, and monitoring codes. Lastly, the core project contains the main domain models, such as `Author`, `Cheep`, and `CheepLike`. 
 
-Persistence is handled with Entity Framework Core. Development uses an empty SQLite database, while production uses a shared external MySQL database through a common connection string. Authentication is handled with ASP.Net Core Identity, where `Author` extends the standard Identity user model. Identity is used for registration, login, logout, and user-specific functionality such as posting cheeps, following other users, and viewing personal timelines. 
+Persistence is handled with EF Core. Development uses an empty SQLite database, while production uses a shared external MySQL database through a common connectionstring. Authentication is handled with Identity, where `Author` extends the standard user model from Identity. It also handles registration, login, logout, and user-specific functionality such as posting cheeps, following other users, and viewing personal timelines. 
 
 The application is containerzied and deployed as multiple identical containers. It also exposes Promethus metrics, including HTTP request metrics and a custom login metric for successful and failed login attempts. 
 
@@ -40,11 +40,11 @@ The observability stack consists of Prometheus, Grafana, Loki, and Alloy.
 ### 1.2 Dependencies
 *Authors: [Nick Kjær Christoffersen, Alexander Hvalsøe Holst, Nanna Helge]*
 
-The system depends on .NET 9, ASP.NET Core Razor Pages, ASP.NET Core Identity, and Entity Framework Core for the main application. Digital Ocean droplet VM's are used. for deploying the application. SQLite is used for local development, while MySQL from Aiven[^2] is used in production. 
+As mentioned the system depends on .NET 9, Razor Pages, Identity, and EF Core for the main application. Digital Ocean droplet VM's are used. for deploying the application. SQLite is used for local development, while MySQL from Aiven[^2] is used in production. 
 
 Docker and Docker Compose are used to build and run the application and supporting services. GitHub Actions is used for build, test, quality checks, release, Docker image publishing, and deployment. Terraform is used for provisioning the Digital Ocean infrastructure. Nginx is used as reverse proxy and load balancer, while Keepalived supports failover between droplets. 
 
-For monitoring and logging, the system uses Prometheus, Grafana, Loki, and Alloy. SonarCloud, CodeQL, Hadolint, and Docker Scout are used for code quality, security checks, Dockerfile linting, and container vulnerability scanning. 
+For monitoring and logging, the system uses Prometheus, Grafana, Loki, and Alloy. SonarCloud, CodeQL, Codacy, Hadolint, and Docker Scout are used for code quality, security checks, Dockerfile linting, and container vulnerability scanning. 
 [^1]: https://www.digitalocean.com/
 [^2]: https://aiven.io/
 
@@ -55,7 +55,7 @@ For monitoring and logging, the system uses Prometheus, Grafana, Loki, and Alloy
 
 The current system is in a working and deployable state. Through GitHub Actions, the application can be built, tested, containerized, pushed to Docker Hub, and deployed to the production droplets. The blue-green setup makes deployment safer because a new version can be started before traffic is moved to it. 
 
-The system is supported by quality and security tools such as SonarCloud, CodeQL, Hadolint, and Docker Scout. These helped find issues in the code, workflows, Dockerfile, and Docker image. Some smaller code quality issues still remain, and the GUI sometimes has latency or stability issues when communicating with the web server.
+The system is supported by quality and security tools such as SonarCloud, CodeQL, Codacy, Hadolint, and Docker Scout. These helped find issues in the code, workflows, Dockerfile, and Docker image. Some smaller code quality issues still remain, and the GUI sometimes has latency or stability issues when communicating with the web server.
 
 A caveat to the CI-CD pipeline is that upon infrastructure changes, the only persistant data, is the base database itself, prometheus, loki and grafana volumes are lost, thereby potentially loosing long term logging and montering data that might've been useful, as well as deleting existing Grafana dashboards. 
 
@@ -156,7 +156,7 @@ The biggest issues and how they were solved:
 Link back to commit messages, issues, tickets etc.
 Also reflect and describe what was the "DevOps" style of your work. For example, what did you do differently to previous development projects and how did it work?
 
-### 3. 1Database issues 
+### 3.1 Database issues 
 *Authors: [Alexander Hvalsøe Holst, Victor Hvid Troelsen]*
 
 
