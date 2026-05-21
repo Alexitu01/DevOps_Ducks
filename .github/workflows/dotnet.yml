@@ -50,4 +50,4 @@ jobs:
           ./sonar/scanner/dotnet-sonarscanner end /d:sonar.token="$env:SONAR_TOKEN"
 
       - name: Codacy analysis CLI
-        uses: codacy/codacy-analysis-cli-action@master
+        uses: codacy/codacy-analysis-cli-action@562ee3e92b8e92df8b67e0a5ff8aa8e261919c08
