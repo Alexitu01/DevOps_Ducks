@@ -75,6 +75,24 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.Hemmelighed }}
   
+  resolve-hosts:
+    runs-on: ubuntu-latest
+    outputs:
+      vm1_ip: ${{ steps.get-ips.outputs.vm1_ip }}
+      vm2_ip: ${{ steps.get-ips.outputs.vm2_ip }}
+    steps:
+      - name: Get droplet IPs from DigitalOcean
+        id: get-ips
+        run: |
+          VM1=$(curl -s "https://api.digitalocean.com/v2/droplets?name=web-1" \
+            -H "Authorization: Bearer ${{ secrets.DIGITAL_OCEAN_TOKEN }}" | \
+            jq -r '.droplets[0].networks.v4[] | select(.type=="public") | .ip_address')
+          VM2=$(curl -s "https://api.digitalocean.com/v2/droplets?name=web-2" \
+            -H "Authorization: Bearer ${{ secrets.DIGITAL_OCEAN_TOKEN }}" | \
+            jq -r '.droplets[0].networks.v4[] | select(.type=="public") | .ip_address')
+          echo "vm1_ip=$VM1" >> $GITHUB_OUTPUT
+          echo "vm2_ip=$VM2" >> $GITHUB_OUTPUT
+
   # new deploy workflow here:
   docker-scout:
     permissions:
@@ -117,34 +135,37 @@ jobs:
         run: docker push "$USERNAME"/minitwit:latest
           
   scp-files:
-    needs: [docker-scout]
+    needs: [docker-scout, resolve-hosts]
     if: github.ref == 'refs/heads/main'
     uses: ./.github/workflows/scp-files.yml
     secrets: inherit
+    with:
+      host1: ${{ needs.resolve-hosts.outputs.vm1_ip }}
+      host2: ${{ needs.resolve-hosts.outputs.vm2_ip }}
   
   deploy_all:
     runs-on: ubuntu-latest
-    needs: [scp-files]
+    needs: [scp-files, resolve-hosts]
     if: github.ref == 'refs/heads/main'
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Run deploy script vm1
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ secrets.SSH_HOST1 }}
+          host: ${{ needs.resolve-hosts.outputs.vm1_ip }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd scripts
             bash deploy.sh
-      
+
       - name: Run deploy script vm2
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ secrets.SSH_HOST2 }}
+          host: ${{ needs.resolve-hosts.outputs.vm2_ip }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
