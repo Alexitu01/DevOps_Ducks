@@ -57,12 +57,16 @@ The current system is in a working and deployable state. Through GitHub Actions,
 
 The system is supported by quality and security tools such as SonarCloud, CodeQL, Hadolint, and Docker Scout. These helped find issues in the code, workflows, Dockerfile, and Docker image. Some smaller code quality issues still remain, and the GUI sometimes has latency or stability issues when communicating with the web server.
 
+A caveat to the CI-CD pipeline is that upon infrastructure changes, the only persistant data, is the base database itself, prometheus, loki and grafana volumes are lost, thereby potentially loosing long term logging and montering data that might've been useful, as well as deleting existing Grafana dashboards. 
+
 #### 1.3.b Code Quality and Security
 
 SonarCloud scans the application for security, reliability, maintainability, duplicated code, and test coverage. We mainly used it to fix security issues and important maintainability problems. 
 
 CodeQL is used in the release workflow to find security issues, especially in the application and CI/CD setup. Hadolint checks the Dockerfile for best-practice problems. Docker Scout scans the built Docker image for known vulnerabilities, especially high and critical ones. In our workflow, Docker Scout reports issues but does not block 
 deployment. 
+
+Codacy, Much like sonarcloud scans the application for risks and bad code; for better coverage.
 
 #### 1.3.c Tests
 
