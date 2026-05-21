@@ -1,7 +1,8 @@
 name: Convert report to pdf
 
 on:
-  push: [ main ]
+  push:
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
