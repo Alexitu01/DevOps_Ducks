@@ -86,35 +86,33 @@ Key artifacts for this chapter include: the [GitHub Actions workflows](../.githu
 ![CI/CD Pipeline](./Diagrams/CI-CD_Pipeline.drawio.png "CI/CD Pipeline Diagram")
 #### Github actions
 All application changes flow through GitHub Actions. A push or pull request triggers dotnet.yml, which restores dependencies, builds the solution, runs the unit and integration test suites, and performs a SonarCloud scan for code quality; <br> 
-docker-lint.yml separately runs Hadolint against the Dockerfile when Docker-related files change.  <br> 
+`docker-lint.yml` separately runs Hadolint against the `Dockerfile` when Docker-related files change.  <br> 
 
 A push to main then triggers release.yml, the delivery pipeline, which runs four sequential jobs:  <br> 
-- the release job performs CodeQL security analysis and publishes platform-specific binaries (creating a GitHub Release on tags); <br> 
-- the docker-scout job builds the container image, scans it for critical and high CVEs with Docker Scout, and pushes it to Docker Hub; <br> 
-- the scp-files job copies the runtime configuration onto both droplets and writes the .env from GitHub Secrets; <br> 
-- the deploy_all job connects to each droplet over SSH and runs deploy\.sh
+- the `release` job performs CodeQL security analysis and publishes platform-specific binaries (creating a GitHub Release on tags); <br> 
+- the `docker-scout` job builds the container image, scans it for critical and high CVEs with Docker Scout, and pushes it to Docker Hub; <br> 
+- the `scp-files.yml` copies the runtime configuration onto both droplets and writes the `.env` from GitHub Secrets; <br> 
+- the deploy_all job connects to each droplet over SSH and runs `deploy.sh`
 
 #### Docker Compose
-The image produced by the pipeline does not run alone. <br> Docker-compose.yml copied to each droplet by the pipeline, describes how the system is wired together: <br> 
-the four web-server containers (two replicas each of the blue and green deployment colours), and the observability services (Prometheus, Loki, Grafana, and Alloy), all sharing a single Docker bridge network. When deploy\.sh runs on a droplet, it uses Docker Compose to pull the new image from Docker Hub and start the inactive colour's containers. <br> The database is deliberately excluded from Compose and runs as a managed mysql instance on a third party (Aiven),
+The image produced by the pipeline does not run alone. <br> `docker-compose.yml` copied to each droplet by the pipeline, describes how the system is wired together: <br> 
+the four web-server containers (two replicas each of the blue and green deployment colours), and the observability services (Prometheus, Loki, Grafana, and Alloy), all sharing a single Docker bridge network. When `deploy.sh` runs on a droplet, it uses Docker Compose to pull the new image from Docker Hub and start the inactive colour's containers. <br> The database is deliberately excluded from Docker Compose and runs as a managed MySql instance on a third party (Aiven).
 
 ### Terraform
-Terraform provisions the infrastructure it runs on. <br> Terraform\.tf defines the two droplets, the firewall rules (opening only ports 22, 80, 443, and 3000), and the reserved IP, and uses provisioners to install Docker, Nginx, and Keepalived on each droplet, copy the Nginx site configuration into place, and render the Keepalived configuration from a per-droplet template (keepalived.tpl). Terraform apply is executed manually by an operator when the infrastructure itself changes, which is rare, whereas the release pipeline runs on every push to main. Separating the two between infrastructure changes and application changes.
-
+Terraform provisions the infrastructure it runs on. <br> `Terraform.tf` defines the two droplets, the firewall rules (opening only ports 22, 80, 443, and 3000), and the reserved IP, and uses provisioners to install Docker, Nginx, and Keepalived on each droplet, copy the Nginx site configuration into place, and render the Keepalived configuration from a per-droplet template (`keepalived.tpl`). `terraform apply` is executed manually by an operator when the infrastructure itself changes, which is rare, whereas the release pipeline runs on every push to main. Separating the two between infrastructure changes and application changes.
 
 ### 2.2 Monitoring
 *Authors: [Alexander Hvalsøe Holst, Nanna Helge]*
 
-As mentioned, our monitoring was mainly done with Prometheus and Grafana. Via the `prometheus.yml` file, Prometheus collected metrics from both blue and green containers, while Grafana's UI made it visually structured.
-Prometheus was used to mainly monitor the 'performance' of the different containers. Latency was monitored to make sure that the response time of the application was acceptable - specifically with new deployments.
+As mentioned, our monitoring was mainly done with Prometheus and Grafana via the `prometheus.yml` file, Prometheus collected metrics from both blue and green containers, while Grafana's UI made it visually structured.
+Prometheus was used to mainly monitor the "performance" of the different containers. Latency was monitored to make sure that the response time of the application was acceptable - specifically with new deployments.
 The total memory use of dotnet was monitored, to detect unusual resource consumption, and verify that the application was stable for new deployments (by comparing them to the old deployments).
 The number of requests were also monitored to see which endpoints were visited often, and what kind of responses those requests would get. (Although this was not relied upon in this course, - since the simulator used API endpoints - in a real-life scenario this sort of monitoring would be important.) 
-
 
 ### 2.3 Logging
 *Authors: [Alexander Hvalsøe Holst, Mathias Bardram Johnbeck]*
 
-With the alloy.config file Alloy scraped logs from the containers and passed them to Loki. Loki collected the logs and by using Grafana, the data also became visually structured.
+With the `alloy.config` file Alloy scraped logs from the containers and passed them to Loki. Loki collected the logs and by using Grafana, the data also became visually structured.
 We used Loki to differentiate between simulator 404 responses and bot 404 responses, making it possible to debug and act upon 'real' failed requests to the webserver API. Similarly to monitering we used Grafana's dashboards to visualize our logs: by job, content and volume.  
 
 
@@ -123,7 +121,7 @@ We used Loki to differentiate between simulator 404 responses and bot 404 respon
 
 Security was handled in several parts of the system. The DigitalOcean firewall only opens the ports needed for SSH, HTTP, HTTPS, and Grafana. The application containers are mapped to host ports internally, but these ports are not opened in the firewall. Incoming traffic instead goes through Nginx.
 
-Nginx works as a reverse proxy in front of the remote virtual machines. This gives the system one public entry point. Keepalived is used to handle fail and makes it easier to control traffic between blue and green deployments.
+Nginx works as a reverse proxy in front of the remote virtual machines. This gives the system one public entry point. Keepalived is used to handle failovers and makes it easier to control traffic between blue and green deployments.
 
 Secrets are not stored in the source code. Database credentials, Docker Hub credentials, SSH keys, and deployment values are stored as GitHub Secrets. During deployment, the workflow writes the needed `.env` file on the droplets.
 
@@ -137,9 +135,9 @@ Security checks are included in the pipeline. SonarCloud, CodeQL and Codacy chec
 Across the two droplets, we use active/passive failover rather than load balancing. 
 A Digital Ocean reserved (floating) IP routes all external traffic to one droplet at a time. 
 Both droplets run an identical stack, but only the one currently holding the reserved IP receives traffic; the other is a hot standby. <br>
-Keepalived daemons on both droplets exchange VRRP heartbeats over the private network and monitor local Nginx health; if the primary's Nginx fails or the primary droplet becomes unreachable, the standby promotes itself to MASTER and runs master\.sh, which calls the Digital Ocean API to reassign the reserved IP to itself. <br>
+Keepalived daemons on both droplets exchange VRRP heartbeats over the private network and monitor local Nginx health. If the primary's Nginx fails or the primary droplet becomes unreachable, the standby promotes itself to MASTER and runs `master.sh`, which calls the Digital Ocean API to reassign the reserved IP to itself. <br>
 
-Within each droplet, Nginx acts as a reverse proxy and load balancer. The active deployment colour runs as two identical container replicas (e.g. blueserver1 and blueserver2), and Nginx distributes incoming requests across them in round-robin fashion via an upstream block. If one replica becomes unresponsive, Nginx detects the failed upstream and routes solely to the healthy one until it recovers
+Within each droplet, Nginx acts as a reverse proxy and load balancer. The active deployment colour runs as two identical container replicas (e.g. `blueserver1` and `blueserver2`), and Nginx distributes incoming requests across them in round-robin fashion via an upstream block. If one replica becomes unresponsive, Nginx detects the failed upstream and routes solely to the healthy one until it recovers
 
 
 ## Reflection Perspective
@@ -149,13 +147,6 @@ The biggest issues and how they were solved:
 3. maintenance
 Link back to commit messages, issues, tickets etc.
 Also reflect and describe what was the "DevOps" style of your work. For example, what did you do differently to previous development projects and how did it work?
-
-
-
-
-
-
-
 
 ### Database issues 
 *Authors: [Alexander Hvalsøe Holst, Victor Hvid Troelsen]*
