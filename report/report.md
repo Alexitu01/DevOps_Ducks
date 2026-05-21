@@ -11,7 +11,7 @@ Key artifacts for this chapter include: the [.NET solution](../ITUMiniTwit.Razor
 
 - Design and architecture
 
-![Systems Diagram](./Diagrams/DevOps_Systems_Final.drawio.png "Systems Structure Diagram")
+![Systems Diagram](./Images/DevOps_Systems_Final.drawio.png "Systems Structure Diagram")
 
 
 #### 1.1.a Application
@@ -63,14 +63,14 @@ A caveat to the CI-CD pipeline is that upon infrastructure changes, the only per
 
 SonarCloud scans the application for security, reliability, maintainability, duplicated code, and test coverage. It was used throughout the project to identify and address issues introduced with new features and changes. The screenshot below shows an example of the quality gate passing on a pull request. Although the focus was on security issues, maintainability and reilability issues still remain.
 
-![SonarCloud Quality Gate](./Diagrams/SonarCloud.png "SonarCloud Quality Gate passed")
+![SonarCloud Quality Gate](./Images/SonarCloud.png "SonarCloud Quality Gate passed")
 
 CodeQL is used in the release workflow to find security issues, especially in the application and CI/CD setup. Hadolint checks the Dockerfile for best-practice problems. Docker Scout scans the built Docker image for known vulnerabilities, especially high and critical ones. In our workflow, Docker Scout reports issues but does not block deployment. The final scan reported 0 critical and 9 high vulnerabilities, all originating from the base image (debian:12-slim) and dependencies rather than application code.
 
-![Docker Scout Vulnerability Scan](./Diagrams/DockerScout.png "Docker Scout scan results")
+![Docker Scout Vulnerability Scan](./Images/DockerScout.png "Docker Scout scan results")
 
 Codacy, Much like sonarcloud scans the application for risks and bad code; for better coverage. Although 18 issues were found in the current solution, we concluded that they were not critical because they related to third-party references in GitHub Actions.
-![Docker Scout Vulnerability Scan](./Diagrams/Codacy.png "Codacy scan results")
+![Docker Scout Vulnerability Scan](./Images/Codacy.png "Codacy scan results")
 
 #### 1.3.c Tests
 
@@ -91,7 +91,7 @@ Key artifacts for this chapter include: the [GitHub Actions workflows](../.githu
 *Authors: [Mathias Bardram Johnbeck]*
 
 - Illustration of individual steps in CI/CD pipeline
-![CI/CD Pipeline](./Diagrams/CI-CD_Pipeline.drawio.png "CI/CD Pipeline Diagram")
+![CI/CD Pipeline](./Images/CI-CD_Pipeline.drawio.png "CI/CD Pipeline Diagram")
 #### Github actions
 All application changes flow through GitHub Actions. A push or pull request triggers dotnet.yml, which restores dependencies, builds the solution, runs the unit and integration test suites, and performs a scan using SonarCloud and Codacy for code quality; <br> 
 `docker-lint.yml` separately runs Hadolint against the `Dockerfile` when Docker-related files change.  <br> 
