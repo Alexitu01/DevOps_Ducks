@@ -17,7 +17,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 9.0.x
 
       - name: Restore dependencies
         run: dotnet restore ITUMiniTwit.Razor.sln
@@ -48,3 +48,6 @@ jobs:
           ./sonar/scanner/dotnet-sonarscanner begin /k:"Alexitu01_DevOps_Ducks" /o:"alexitu01" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.host.url="https://sonarcloud.io"
           dotnet build
           ./sonar/scanner/dotnet-sonarscanner end /d:sonar.token="$env:SONAR_TOKEN"
+
+      - name: Codacy analysis CLI
+        uses: codacy/codacy-analysis-cli-action@master
