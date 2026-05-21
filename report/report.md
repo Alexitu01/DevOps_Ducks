@@ -44,7 +44,7 @@ The system depends on .NET 9, ASP.NET Core Razor Pages, ASP.NET Core Identity, a
 
 Docker and Docker Compose are used to build and run the application and supporting services. GitHub Actions is used for build, test, quality checks, release, Docker image publishing, and deployment. Terraform is used for provisioning the Digital Ocean infrastructure. Nginx is used as reverse proxy and load balancer, while Keepalived supports failover between droplets. 
 
-For monitoring and logging, the system uses Prometheus, Grafana, Loki, and Alloy. SonarCloud, CodeQL, Hadolint, and Docker Scout are used for code quality, sercurity checks, Dockerfile linting, and container vulnerability scanning. 
+For monitoring and logging, the system uses Prometheus, Grafana, Loki, and Alloy. SonarCloud, CodeQL, Hadolint, and Docker Scout are used for code quality, security checks, Dockerfile linting, and container vulnerability scanning. 
 [^1]: https://www.digitalocean.com/
 [^2]: https://aiven.io/
 
@@ -105,7 +105,7 @@ Terraform provisions the infrastructure it runs on. <br> Terraform\.tf defines t
 ### 2.2 Monitoring
 *Authors: [Alexander Hvalsøe Holst, Nanna Helge]*
 
-As mentioned, our monitoring was mainly done with Prometheus and Grafana. Via the prometheus.yml file, Prometheus collected metrics from both blue and green containers, while Grafana's UI made it visually structured.
+As mentioned, our monitoring was mainly done with Prometheus and Grafana. Via the `prometheus.yml` file, Prometheus collected metrics from both blue and green containers, while Grafana's UI made it visually structured.
 Prometheus was used to mainly monitor the 'performance' of the different containers. Latency was monitored to make sure that the response time of the application was acceptable - specifically with new deployments.
 The total memory use of dotnet was monitored, to detect unusual resource consumption, and verify that the application was stable for new deployments (by comparing them to the old deployments).
 The number of requests were also monitored to see which endpoints were visited often, and what kind of responses those requests would get. (Although this was not relied upon in this course, - since the simulator used API endpoints - in a real-life scenario this sort of monitoring would be important.) 
@@ -123,13 +123,13 @@ We used Loki to differentiate between simulator 404 responses and bot 404 respon
 
 Security was handled in several parts of the system. The DigitalOcean firewall only opens the ports needed for SSH, HTTP, HTTPS, and Grafana. The application containers are mapped to host ports internally, but these ports are not opened in the firewall. Incoming traffic instead goes through Nginx.
 
-Nginx works as a reverse proxy in front of the application containers. This gives the system one public entry point and makes it easier to control traffic between blue and green deployments.
+Nginx works as a reverse proxy in front of the remote virtual machines. This gives the system one public entry point. Keepalived is used to handle fail and makes it easier to control traffic between blue and green deployments.
 
 Secrets are not stored in the source code. Database credentials, Docker Hub credentials, SSH keys, and deployment values are stored as GitHub Secrets. During deployment, the workflow writes the needed `.env` file on the droplets.
 
 The application also contains HTTPS-related setup. ASP.NET Core uses HTTPS redirection and HSTS in production, and Terraform installs Certbot and opens port 443. However, the checked-in Nginx configuration only shows the HTTP server block, so the final production HTTPS setup is not fully visible from the repository.
 
-Security checks are included in the pipeline. SonarCloud checks code quality and security hotspots, CodeQL scans for security issues, Hadolint checks the Dockerfile, and Docker Scout scans the Docker image for known vulnerabilities.
+Security checks are included in the pipeline. SonarCloud, CodeQL and Codacy checks both code quality and security issues, while Docker Scout scans the Docker image for known vulnerabilities.
 
 
 ### 2.5 Availability
@@ -151,6 +151,12 @@ Link back to commit messages, issues, tickets etc.
 Also reflect and describe what was the "DevOps" style of your work. For example, what did you do differently to previous development projects and how did it work?
 
 
+
+
+
+
+
+
 ### Database issues 
 *Authors: [Alexander Hvalsøe Holst, Victor Hvid Troelsen]*
 
@@ -164,11 +170,27 @@ When the application was hosted, the database got wiped twice within the first w
 In the middle of the course the main VM got 'corrupted'. The causes were (and are) unkown even with extensive debugging. The first time we tried restarting the VM, and even sending a 'ticket' to Digital Ocean. After a week of trying to recover the specific droplet, it was decided that 'just' creating a new droplet was the best solutiom.
 This made the team more focused on simply getting the system back up, rather than trying to find the "right" procedures.
 
-### Spillover 
+### Spillover
 *Authors: [Alexander Hvalsøe Holst, Mathias Bardram Johnbeck]*
 
 In this course there were some issues with implementation, meaning; new functionality requirements were added, while older requirements were still not fully implemented. We mitigated this with a focus of efficient division of labour, in an attempt to reduce bottlenecks and iddling. As such some features took a backseat even if they technically should have been implemented first.
 
+
+### DevOps Reflection
+
+*Authors: [Victor Hvid Troelsen]*
+  
+In previous projects, the team had no monitoring, logging, or automated deployment. Problems were discovered only when something visibly broke, and code reached production manually.
+
+The most noticeable shift was the feedback loop. GitHub Actions delivered test failures and security scan results within minutes of a push. More unexpectedly, Prometheus, Grafana, and Loki surfaced problems the team would not have
+thought to look for — 404 patterns distinguishing real errors from simulator noise, or memory diverging between blue and green containers. Being notified about these things rather than having to look for them was a qualitatively
+different experience from past projects.
+  
+Infrastructure as code changed how the team thought about failure. When the primary VM became corrupted mid-course, it had to be rebuilt manually. An experience that underlined exactly why reproducible infrastructure matters.
+
+The main friction was pipeline overhead. For small fixes, waiting for the full CI run felt slow compared to deploying directly.
+
+Overall, the biggest practical difference was not any single tool, but the combination of automation and observability: broken builds, failing containers, and unusual traffic patterns became visible events rather than silent failures.
 
 ## Use of Generative AI
 Generative AI services such as OpenAI and Anthropic's Claude, were used mainly for issues that weren't well documented, for debugging, and for help with explaining tool documentation.
