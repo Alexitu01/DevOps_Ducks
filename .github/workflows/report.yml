@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Convert report
-        uses: baileyjm02/markdown-to-pdf@v1
+        uses: baileyjm02/markdown-to-pdf@1be26775add5f94fb55d4a2ce36ff7cad23b8dd0
         with:
           input_path: report/report.md
           output_dir: report/build

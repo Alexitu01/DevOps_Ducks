@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Upload docker-compose
-        uses: appleboy/scp-action@v1
+        uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345
         with:
           host: ${{ secrets.SSH_HOST1 }},${{ secrets.SSH_HOST2 }}
           username: ${{ secrets.SSH_USER }}
@@ -22,7 +22,7 @@ jobs:
           target: /root
       
       - name: Upload prometheus.yml file
-        uses: appleboy/scp-action@v1
+        uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345
         with:
           host: ${{ secrets.SSH_HOST1 }},${{ secrets.SSH_HOST2 }}
           username: ${{ secrets.SSH_USER }}
@@ -31,7 +31,7 @@ jobs:
           target: /root
         
       - name: Upload config.alloy file
-        uses: appleboy/scp-action@v1
+        uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345
         with:
           host: ${{ secrets.SSH_HOST1 }},${{ secrets.SSH_HOST2 }}
           username: ${{ secrets.SSH_USER }}
@@ -40,7 +40,7 @@ jobs:
           target: /root
       
       - name: Upload loki-config.yml file
-        uses: appleboy/scp-action@v1
+        uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345
         with:
           host: ${{ secrets.SSH_HOST1 }}, ${{ secrets.SSH_HOST2 }}
           username: ${{ secrets.SSH_USER }}
@@ -50,7 +50,7 @@ jobs:
           
         # Creating .env file via SSH to VM in order to use environment variables for database etc.
       - name: Create .env file vm1
-        uses: appleboy/ssh-action@v1
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2
         with:
           host: ${{ secrets.SSH_HOST1 }}
           username: ${{ secrets.SSH_USER }}
@@ -67,7 +67,7 @@ jobs:
             EOF
 
       - name: Create .env file vm2
-        uses: appleboy/ssh-action@v1
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2
         with:
           host: ${{ secrets.SSH_HOST2 }}
           username: ${{ secrets.SSH_USER }}
@@ -84,7 +84,7 @@ jobs:
             EOF
         
       - name: Upload deploy.sh
-        uses: appleboy/scp-action@v1
+        uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345
         with:
           host: ${{ secrets.SSH_HOST1 }},${{ secrets.SSH_HOST2 }}
           username: ${{ secrets.SSH_USER }}
@@ -93,7 +93,7 @@ jobs:
           target: /root
 
       - name: Upload nginx config
-        uses: appleboy/scp-action@v1
+        uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345
         with:
           host: ${{ secrets.SSH_HOST1 }},${{ secrets.SSH_HOST2 }}
           username: ${{ secrets.SSH_USER }}
@@ -102,7 +102,7 @@ jobs:
           target: /root
 
       - name: Install nginx config
-        uses: appleboy/ssh-action@v1
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2
         with:
           host: ${{ secrets.SSH_HOST1 }},${{ secrets.SSH_HOST2 }}
           username: ${{ secrets.SSH_USER }}
