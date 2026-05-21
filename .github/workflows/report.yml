@@ -1,4 +1,4 @@
-name: Convert report to pdf
+name: Convert to pdf
 
 on:
   push:
@@ -6,25 +6,43 @@ on:
   workflow_dispatch:
 
 jobs:
-  convert:
+  build-report:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Convert report
-        uses: baileyjm02/markdown-to-pdf@1be26775add5f94fb55d4a2ce36ff7cad23b8dd0
-        with:
-          input_path: report/report.md
-          output_dir: report/build
-          images_dir: report/Images
-          build_html: false
-
-      - name: Rename and commit PDF
+      
+      - name: Install Pandoc and LaTeX
         run: |
-          mv report/build/report.pdf report/build/BSc_group_a.pdf
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add report/build/BSc_group_a.pdf
-          git diff --cached --quiet || git commit -m "Generate report PDF"
-          git push
+          sudo apt-get update
+          sudo apt-get install -y pandoc texlive-latex-recommended texlive-fonts-recommended texlive-latex-extra
+
+      - name: Build report PDF
+        run: |
+            if ls report/.md 1>/dev/null 2>&1; then
+              mkdir -p report/build
+              pandoc report/.md \--resource-path=report \-o report/build/BSc_group_a.pdf
+              echo "report_built=true" >> "$GITHUB_ENV"
+            else
+              echo "No markdown files found in report/, skipping build"
+              echo "report_built=false" >> "$GITHUB_ENV"
+            fi
+
+      - name: Upload report artifact
+            if: env.report_built == 'true'
+            uses: actions/upload-artifact@v4
+            with:
+              name: report-pdf
+              path: report/build/BSc_group_a.pdf
+
+      - name: Commit report PDF
+            if: env.report_built == 'true'
+            run: |
+              git config user.name "github-actions"
+              git config user.email "github-actions@github.com"
+              git add report/build/BSc_group_a.pdf
+              git diff --cached --quiet || git commit -m "Build report PDF [skip ci]"
+              git push
