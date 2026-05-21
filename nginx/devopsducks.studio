@@ -9,8 +9,6 @@ upstream green {
 }
 
 server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
     server_name devopsducks.studio www.devopsducks.studio;
 
     location / {
@@ -21,4 +19,18 @@ server {
         proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
     }
+
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    ssl_certificate /etc/letsencrypt/live/devopsducks.studio/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/devopsducks.studio/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+}
+
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name devopsducks.studio www.devopsducks.studio;
+    return 301 https://$host$request_uri;
 }
