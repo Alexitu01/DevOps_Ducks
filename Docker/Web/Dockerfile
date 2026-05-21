@@ -5,7 +5,7 @@
 #Read the documentation in this file, and on this website: "https://www.roundthecode.com/dotnet-tutorials/how-do-you-write-dockerfile-asp-net-core-app"
 
 #First define the SDK to build the app.
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 
 #This doesn't refer to a specific path in the repository. It is the name of the directory inside the docker image.
 WORKDIR /source
@@ -28,7 +28,7 @@ RUN dotnet publish "./ITUMiniTwit.Web.csproj" -o /app/publish
 
 
 #Defines the SDK for running the app.
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS run
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS run
 
 #Now we define the WORKDIR to be, the local path where Docker writes it's output (look at build & publish)
 WORKDIR /app
