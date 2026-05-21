@@ -8,4 +8,19 @@ jobs:
   convert:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
+      - name: Convert report
+        uses: baileyjm02/markdown-to-pdf@v1
+        with:
+          input_path: report/report.md
+          output_dir: report/build
+          images_dir: report/images
+          build_html: false
+
+      - name: Upload pdf
+        uses: actions/upload-artifact@v3
+        with:
+          name: report.pdf
+          path: report/build 
