@@ -39,6 +39,23 @@ When the branch has been pushed to GitHub, create a pull request, wait for the w
 - Docker & Docker Compose
 - Terraform
 
+## Demos
+
+### Monitoring Dashboard
+![Monitoring Dashboard](Images/Monitoring-dashboard.gif)
+
+### Logging Dashboard
+![Logging Dashboard](Images/Logging-dashboard.gif)
+
+### Infrastructure as Code
+![IaC Demo](Images/IaC-Demo.gif)
+
+### CI/CD Pipeline
+![CI/CD Demo Part 1](Images/CICD_demo-part1.gif)
+![CI/CD Demo Part 2](Images/CICD_demo-part2.gif)
+![CI/CD Demo Part 3](Images/CICD_demo-part3.gif)
+![CI/CD Demo Part 4](Images/CICD_demo-part4.gif)
+
 ## Legacy branch
 The branch `ITUMiniTwit.Legacy` contains the original Python-based MiniTwit implementation used earlier in the course.  
 It is kept for reference purposes only and is **not under active development**.
