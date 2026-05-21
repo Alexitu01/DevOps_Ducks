@@ -1,9 +1,9 @@
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
-using Microsoft.AspNetCore.Mvc.Testing;
-using System.Threading.Tasks;
 using NUnit.Framework;
-using System.Text.RegularExpressions;
 
 namespace PlaywrightTest;
 

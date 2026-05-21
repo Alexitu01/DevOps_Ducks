@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using ITUMiniTwit.Infrastructure.ITUMiniTwit.Service;
 using ITUMiniTwit.Core;
 using ITUMiniTwit.Core.Models;
+using ITUMiniTwit.Infrastructure.ITUMiniTwit.Service;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ITUMiniTwit.Web.Pages
 {

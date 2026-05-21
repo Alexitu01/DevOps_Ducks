@@ -1,10 +1,10 @@
-using Xunit;
-using Microsoft.Data.Sqlite;
-using ITUMiniTwit.Infrastructure;
-using ITUMiniTwit.Core.Models;
-using ITUMiniTwit.Infrastructure.ITUMiniTwit.Repositories;
-using Microsoft.EntityFrameworkCore;
 using ITUMiniTwit.Core;
+using ITUMiniTwit.Core.Models;
+using ITUMiniTwit.Infrastructure;
+using ITUMiniTwit.Infrastructure.ITUMiniTwit.Repositories;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
+using Xunit;
 namespace ITUMiniTwit.InfrastructureTests;
 
 public class DatabaseTests : IDisposable

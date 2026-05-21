@@ -1,10 +1,10 @@
 using Prometheus;
-
 namespace ITUMiniTwit.Infrastructure.ITUMiniTwit.Moniter;
+#pragma warning disable format
 public class LoginMetrics : ILoginMetrics
+#pragma warning restore format
 {
     private readonly Counter _counter;
-
     public LoginMetrics()
     {
         _counter = Metrics.CreateCounter(

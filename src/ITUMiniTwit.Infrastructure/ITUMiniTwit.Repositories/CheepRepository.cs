@@ -1,8 +1,8 @@
-using ITUMiniTwit.Core;
-using ITUMiniTwit.Core.Models;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ITUMiniTwit.Core;
+using ITUMiniTwit.Core.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ITUMiniTwit.Infrastructure.ITUMiniTwit.Repositories;
