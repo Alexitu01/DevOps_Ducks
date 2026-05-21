@@ -9,8 +9,6 @@ Key artifacts for this chapter include: the [.NET solution](../ITUMiniTwit.Razor
 ### 1.1 System Structure
 *Authors: [Nick Kjær Christoffersen, Alexander Hvalsøe Holst, Victor Hvid Troelsen, Mathias Bardram Johnbeck]*
 
-- Design and architecture
-
 ![Systems Diagram](./Images/DevOps_Systems_Final.drawio.png "Systems Structure Diagram")
 
 
@@ -91,8 +89,6 @@ Key artifacts for this chapter include: the [GitHub Actions workflows](../.githu
 
 ### 2.1 Process Stages
 *Authors: [Mathias Bardram Johnbeck]*
-
-- Illustration of individual steps in CI/CD pipeline
 
 ![CI/CD Pipeline](./Images/CI-CD_Pipeline.drawio.png "CI/CD Pipeline Diagram"){ width=100% }
 
