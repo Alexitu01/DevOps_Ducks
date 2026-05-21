@@ -86,10 +86,10 @@ jobs:
         run: |
           VM1=$(curl -s "https://api.digitalocean.com/v2/droplets?name=web-1" \
             -H "Authorization: Bearer ${{ secrets.DIGITAL_OCEAN_TOKEN }}" | \
-            jq -r '.droplets[0].networks.v4[] | select(.type=="public") | .ip_address')
+            jq -r 'first(.droplets[0].networks.v4[] | select(.type=="public") | .ip_address)')
           VM2=$(curl -s "https://api.digitalocean.com/v2/droplets?name=web-2" \
             -H "Authorization: Bearer ${{ secrets.DIGITAL_OCEAN_TOKEN }}" | \
-            jq -r '.droplets[0].networks.v4[] | select(.type=="public") | .ip_address')
+            jq -r 'first(.droplets[0].networks.v4[] | select(.type=="public") | .ip_address)')
           echo "vm1_ip=$VM1" >> $GITHUB_OUTPUT
           echo "vm2_ip=$VM2" >> $GITHUB_OUTPUT
 
