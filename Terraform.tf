@@ -29,6 +29,8 @@ output "vm2_ip" {
 data "digitalocean_ssh_keys" "all" {}
 
 locals {
+  ssh_private_key = fileexists(pathexpand("~/.ssh/id_rsa")) ? file(pathexpand("~/.ssh/id_rsa")) : file(pathexpand("~/.ssh/id_ed25519"))
+
   provision_packages = [
     "sudo apt-get update -y",
     "sudo apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release git nginx",
@@ -53,7 +55,6 @@ resource "digitalocean_droplet" "vm1" {
   region             = "fra1"
   size               = "s-2vcpu-4gb"
   ssh_keys           = data.digitalocean_ssh_keys.all.ssh_keys[*].id
-  private_networking = true
 
   provisioner "remote-exec" {
     inline = local.provision_packages
@@ -61,7 +62,7 @@ resource "digitalocean_droplet" "vm1" {
     connection {
       type        = "ssh"
       user        = "root"
-      private_key = file("~/.ssh/id_rsa")
+      private_key = local.ssh_private_key
       host        = self.ipv4_address
     }
   }
@@ -73,7 +74,7 @@ resource "digitalocean_droplet" "vm1" {
     connection {
       type        = "ssh"
       user        = "root"
-      private_key = file("~/.ssh/id_rsa")
+      private_key = local.ssh_private_key
       host        = self.ipv4_address
     }
   }
@@ -84,7 +85,7 @@ resource "digitalocean_droplet" "vm1" {
     connection {
       type        = "ssh"
       user        = "root"
-      private_key = file("~/.ssh/id_rsa")
+      private_key = local.ssh_private_key
       host        = self.ipv4_address
     }
   }
@@ -96,7 +97,6 @@ resource "digitalocean_droplet" "vm2" {
   region             = "fra1"
   size               = "s-2vcpu-4gb"
   ssh_keys           = data.digitalocean_ssh_keys.all.ssh_keys[*].id
-  private_networking = true
 
   provisioner "remote-exec" {
     inline = local.provision_packages
@@ -104,7 +104,7 @@ resource "digitalocean_droplet" "vm2" {
     connection {
       type        = "ssh"
       user        = "root"
-      private_key = file("~/.ssh/id_rsa")
+      private_key = local.ssh_private_key
       host        = self.ipv4_address
     }
   }
@@ -116,7 +116,7 @@ resource "digitalocean_droplet" "vm2" {
     connection {
       type        = "ssh"
       user        = "root"
-      private_key = file("~/.ssh/id_rsa")
+      private_key = local.ssh_private_key
       host        = self.ipv4_address
     }
   }
@@ -127,7 +127,7 @@ resource "digitalocean_droplet" "vm2" {
     connection {
       type        = "ssh"
       user        = "root"
-      private_key = file("~/.ssh/id_rsa")
+      private_key = local.ssh_private_key
       host        = self.ipv4_address
     }
   }
@@ -187,9 +187,13 @@ resource "digitalocean_firewall" "web" {
   }
 }
 
-# To import the existing reserved IP: terraform import digitalocean_reserved_ip.web 68.183.242.15
+# To import the existing reserved IP: terraform import digitalocean_reserved_ip.web 159.89.213.196
 resource "digitalocean_reserved_ip" "web" {
   region = "fra1"
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 output "reserved_ip" {
@@ -220,26 +224,40 @@ resource "null_resource" "keepalived_vm1" {
     connection {
       type        = "ssh"
       user        = "root"
-      private_key = file("~/.ssh/id_rsa")
+      private_key = local.ssh_private_key
       host        = digitalocean_droplet.vm1.ipv4_address
     }
   }
 
   provisioner "file" {
-    source      = "scripts/master.sh"
+    content     = templatefile("scripts/master.sh", { reserved_ip = digitalocean_reserved_ip.web.ip_address })
     destination = "/etc/keepalived/master.sh"
 
     connection {
       type        = "ssh"
       user        = "root"
-      private_key = file("~/.ssh/id_rsa")
+      private_key = local.ssh_private_key
+      host        = digitalocean_droplet.vm1.ipv4_address
+    }
+  }
+
+  provisioner "file" {
+    source      = "scripts/assign-ip"
+    destination = "/usr/local/bin/assign-ip"
+
+    connection {
+      type        = "ssh"
+      user        = "root"
+      private_key = local.ssh_private_key
       host        = digitalocean_droplet.vm1.ipv4_address
     }
   }
 
   provisioner "remote-exec" {
     inline = [
-      "chmod +x /etc/keepalived/master.sh",
+      "echo 'export DO_TOKEN=${var.DIGITAL_OCEAN_TOKEN}' > /etc/keepalived/keepalived.env",
+      "chmod 600 /etc/keepalived/keepalived.env",
+      "chmod +x /etc/keepalived/master.sh /usr/local/bin/assign-ip",
       "sudo systemctl enable keepalived",
       "sudo systemctl restart keepalived",
     ]
@@ -247,7 +265,7 @@ resource "null_resource" "keepalived_vm1" {
     connection {
       type        = "ssh"
       user        = "root"
-      private_key = file("~/.ssh/id_rsa")
+      private_key = local.ssh_private_key
       host        = digitalocean_droplet.vm1.ipv4_address
     }
   }
@@ -269,26 +287,40 @@ resource "null_resource" "keepalived_vm2" {
     connection {
       type        = "ssh"
       user        = "root"
-      private_key = file("~/.ssh/id_rsa")
+      private_key = local.ssh_private_key
       host        = digitalocean_droplet.vm2.ipv4_address
     }
   }
 
   provisioner "file" {
-    source      = "scripts/master.sh"
+    content     = templatefile("scripts/master.sh", { reserved_ip = digitalocean_reserved_ip.web.ip_address })
     destination = "/etc/keepalived/master.sh"
 
     connection {
       type        = "ssh"
       user        = "root"
-      private_key = file("~/.ssh/id_rsa")
+      private_key = local.ssh_private_key
+      host        = digitalocean_droplet.vm2.ipv4_address
+    }
+  }
+
+  provisioner "file" {
+    source      = "scripts/assign-ip"
+    destination = "/usr/local/bin/assign-ip"
+
+    connection {
+      type        = "ssh"
+      user        = "root"
+      private_key = local.ssh_private_key
       host        = digitalocean_droplet.vm2.ipv4_address
     }
   }
 
   provisioner "remote-exec" {
     inline = [
-      "chmod +x /etc/keepalived/master.sh",
+      "echo 'export DO_TOKEN=${var.DIGITAL_OCEAN_TOKEN}' > /etc/keepalived/keepalived.env",
+      "chmod 600 /etc/keepalived/keepalived.env",
+      "chmod +x /etc/keepalived/master.sh /usr/local/bin/assign-ip",
       "sudo systemctl enable keepalived",
       "sudo systemctl restart keepalived",
     ]
@@ -296,7 +328,7 @@ resource "null_resource" "keepalived_vm2" {
     connection {
       type        = "ssh"
       user        = "root"
-      private_key = file("~/.ssh/id_rsa")
+      private_key = local.ssh_private_key
       host        = digitalocean_droplet.vm2.ipv4_address
     }
   }

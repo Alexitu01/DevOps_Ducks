@@ -1,6 +1,7 @@
 #!/bin/bash
-: "${DO_TOKEN:?DO_TOKEN env var must be set}"
-IP="${RESERVED_IP:-68.183.242.15}"
+source /etc/keepalived/keepalived.env
+: "$${DO_TOKEN:?DO_TOKEN env var must be set}"
+IP="${reserved_ip}"
 ID=$(curl -s http://169.254.169.254/metadata/v1/id)
 HAS_RESERVED_IP=$(curl -s http://169.254.169.254/metadata/v1/reserved_ip/ipv4/active)
 
