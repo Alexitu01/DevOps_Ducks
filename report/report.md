@@ -62,7 +62,7 @@ A caveat to the CI-CD pipeline is that upon infrastructure changes, the only per
 #### 1.3.b Current Code Quality and Security
 
 
-SonarCloud scans the application for security, reliability, maintainability, duplicated code, and test coverage. It was used throughout the project to identify and address issues introduced with new features and changes. The screenshot below shows an example of the quality gate passing on a pull request with no new issues or security hotspots introduced.
+SonarCloud scans the application for security, reliability, maintainability, duplicated code, and test coverage. It was used throughout the project to identify and address issues introduced with new features and changes. The screenshot below shows an example of the quality gate passing on a pull request. Although the focus was on security issues, maintainability and reilability issues still remain.
 
 ![SonarCloud Quality Gate](./Diagrams/SonarCloud.png "SonarCloud Quality Gate passed")
 
@@ -70,7 +70,8 @@ CodeQL is used in the release workflow to find security issues, especially in th
 
 ![Docker Scout Vulnerability Scan](./Diagrams/DockerScout.png "Docker Scout scan results")
 
-Codacy, Much like sonarcloud scans the application for risks and bad code; for better coverage.
+Codacy, Much like sonarcloud scans the application for risks and bad code; for better coverage. Although 18 issues were found in the current solution, we concluded that they were not critical because they related to third-party references in GitHub Actions.
+![Docker Scout Vulnerability Scan](./Diagrams/Codacy.png "Codacy scan results")
 
 #### 1.3.c Tests
 
