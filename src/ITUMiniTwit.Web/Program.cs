@@ -1,15 +1,15 @@
-using ITUMiniTwit.Infrastructure.ITUMiniTwit.Service;
-using ITUMiniTwit.Infrastructure.ITUMiniTwit.Repositories;
-using ITUMiniTwit.Infrastructure.ITUMiniTwit.Moniter;
-using ITUMiniTwit.Infrastructure;
-using ITUMiniTwit.Web;
-using Microsoft.EntityFrameworkCore;
-using Pomelo.EntityFrameworkCore.MySql;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using ITUMiniTwit.Core.Models;
+using ITUMiniTwit.Infrastructure;
+using ITUMiniTwit.Infrastructure.ITUMiniTwit.Moniter;
+using ITUMiniTwit.Infrastructure.ITUMiniTwit.Repositories;
+using ITUMiniTwit.Infrastructure.ITUMiniTwit.Service;
+using ITUMiniTwit.Web;
 using ITUMiniTwit.Web.Areas.Identity.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Pomelo.EntityFrameworkCore.MySql;
 using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);

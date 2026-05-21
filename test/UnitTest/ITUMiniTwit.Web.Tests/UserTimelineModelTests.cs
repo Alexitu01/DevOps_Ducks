@@ -2,17 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using ITUMiniTwit.Core;
+using ITUMiniTwit.Core.Models;
 using ITUMiniTwit.Infrastructure.ITUMiniTwit.Service;
 using ITUMiniTwit.Web.Pages;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Xunit;
 using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
-using ITUMiniTwit.Core.Models;
+using Xunit;
 
 namespace ITUMiniTwit.Web.Tests;
 

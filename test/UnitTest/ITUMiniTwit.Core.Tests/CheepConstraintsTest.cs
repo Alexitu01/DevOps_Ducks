@@ -1,12 +1,12 @@
 using System;
 using System.Linq;
-using Xunit;
+using ITUMiniTwit.Core;
+using ITUMiniTwit.Core.Models;
+using ITUMiniTwit.Infrastructure;
+using ITUMiniTwit.Infrastructure.ITUMiniTwit.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.InMemory;
-using ITUMiniTwit.Core.Models;
-using ITUMiniTwit.Infrastructure.ITUMiniTwit.Repositories;
-using ITUMiniTwit.Core;
-using ITUMiniTwit.Infrastructure;
+using Xunit;
 
 namespace ITUMiniTwit.Core.Tests
 {

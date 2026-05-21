@@ -1,9 +1,9 @@
 using System.Linq;
+using ITUMiniTwit.Core.Models;
+using ITUMiniTwit.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using ITUMiniTwit.Core.Models;
-using ITUMiniTwit.Infrastructure;
 
 namespace ITUMiniTwit.Web.Areas.Identity.Pages.Account
 {

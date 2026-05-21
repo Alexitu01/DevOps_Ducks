@@ -1,8 +1,8 @@
-using ITUMiniTwit.Infrastructure.ITUMiniTwit.Repositories;
-using ITUMiniTwit.Core.Models;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using ITUMiniTwit.Core.Models;
+using ITUMiniTwit.Infrastructure.ITUMiniTwit.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace ITUMiniTwit.Infrastructure.Tests;
