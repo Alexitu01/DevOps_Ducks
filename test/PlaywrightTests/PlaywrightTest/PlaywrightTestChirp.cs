@@ -1,4 +1,4 @@
-﻿using Microsoft.Playwright;
+using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System.Threading.Tasks;
@@ -52,9 +52,9 @@ public class Tests : PageTest
         await Page.GotoAsync("https://localhost:7102/");
 
         await Expect(Page).ToHaveTitleAsync(new Regex("ITUMiniTwit!"));
-        
+
         var register = Page.Locator("text=register");
-        
+
         await register.ClickAsync();
 
         await Expect(Page).ToHaveURLAsync(new Regex("/Account/Register"));
@@ -64,43 +64,43 @@ public class Tests : PageTest
     public async Task UsersCanRegisterNewAccount()
     {
         await Page.GotoAsync("https://localhost:7102/");
-        
+
         await Expect(Page).ToHaveTitleAsync(new Regex("ITUMiniTwit!"));
-        
+
         var register = Page.Locator("text=register");
-        
+
         await register.ClickAsync();
-        
+
         await Expect(Page).ToHaveURLAsync(new Regex("/Account/Register"));
 
         await Expect(Page).ToHaveTitleAsync(new Regex("Register"));
 
         await Page.GetByLabel("Email").FillAsync("nanna@test.com");
         await Page.GetByLabel("Username").FillAsync("test");
-        await Page.GetByLabel("Password", new (){Exact = true}).FillAsync("I!s3456");
-        await Page.GetByLabel("Confirm Password", new (){Exact = true}).FillAsync("I!s3456");
+        await Page.GetByLabel("Password", new() { Exact = true }).FillAsync("I!s3456");
+        await Page.GetByLabel("Confirm Password", new() { Exact = true }).FillAsync("I!s3456");
     }
 
     [Test]
     public async Task UserCanLoginAndSeeDashboard()
     {
         await Page.GotoAsync("https://localhost:7102/");
-        
+
         await Expect(Page).ToHaveTitleAsync(new Regex("ITUMiniTwit!"));
-        
+
         var login = Page.Locator("text=login");
 
         await login.ClickAsync();
 
         await Expect(Page).ToHaveURLAsync(new Regex("/Account/Login"));
-        
+
         await Page.GetByLabel("Username").FillAsync("HelgeCPH");
-        await Page.GetByLabel("Password", new (){Exact = true}).FillAsync("LetM31n!");
-        
+        await Page.GetByLabel("Password", new() { Exact = true }).FillAsync("LetM31n!");
+
         var loginButton = Page.Locator("id=login-submit");
-        
+
         await loginButton.ClickAsync();
-        
+
         await Expect(Page).ToHaveURLAsync(new Regex("/"));
     }
 }

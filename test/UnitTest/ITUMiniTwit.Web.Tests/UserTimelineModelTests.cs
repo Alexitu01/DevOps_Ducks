@@ -1,4 +1,4 @@
-﻿﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using ITUMiniTwit.Core;
@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Xunit;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Routing;
-using ITUMiniTwit.Core.Models; 
+using ITUMiniTwit.Core.Models;
 
 namespace ITUMiniTwit.Web.Tests;
 
@@ -22,7 +22,7 @@ public class UserTimelineModelTests
     {
         public List<CheepDto>? NextGetCheepsResult { get; set; }
         public List<CheepDto>? NextGetCheepsFromAuthorResult { get; set; }
-        
+
         public Func<string, int, int, List<CheepDto>>? GetCheepsFromAuthorHandler { get; set; }
 
         public int? LastPage { get; private set; }
@@ -56,13 +56,13 @@ public class UserTimelineModelTests
             LastAddCheepAuthor = authorUserName;
             LastAddCheepText = text;
         }
-        
+
         public void LikeCheep(string authorUserName, int cheepId)
         {
             // Do something
         }
     }
-    
+
     private sealed class StubAuthorService : IAuthorService
     {
         public Task Follow(string followerUserName, string followeeUserName)
@@ -113,7 +113,7 @@ public class UserTimelineModelTests
         public List<Author>? NextGetFollowingResult { get; set; }
     }
 
-    private static UserTimelineModel CreateModelWithUser(StubCheepService cheepStub,StubAuthorService authorStub, bool authenticated, string? userName)
+    private static UserTimelineModel CreateModelWithUser(StubCheepService cheepStub, StubAuthorService authorStub, bool authenticated, string? userName)
     {
         var model = new UserTimelineModel(cheepStub, authorStub);
 
@@ -129,9 +129,9 @@ public class UserTimelineModelTests
         {
             User = principal
         };
-        
+
         var actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
-        
+
         var modelState = new ModelStateDictionary();
 
         var viewData = new ViewDataDictionary(
@@ -145,7 +145,7 @@ public class UserTimelineModelTests
         };
 
         model.PageContext = pageContext;
-        
+
         return model;
     }
 
@@ -248,7 +248,7 @@ public class UserTimelineModelTests
         Assert.Equal(1, model.ViewData["CurrentPage"]);
         Assert.Equal(string.Empty, model.ViewData["Author"]);
     }
-    
+
     [Fact]
     public void OnGet_ViewingOwnTimeline_LoadsOwnAndFolloweesCheeps_AndSetsFollowing()
     {
@@ -458,7 +458,7 @@ public class UserTimelineModelTests
         Assert.Equal(author, cheepStub.LastAddCheepAuthor);
         Assert.Equal("test cheep", cheepStub.LastAddCheepText);
     }
-    
+
     [Fact]
     public void OnPostFollow_UnauthenticatedUser_ReturnsUnauthorized()
     {

@@ -25,20 +25,21 @@ builder.Services.AddSingleton<ILoginMetrics, LoginMetrics>();
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 var serverVersion = new MySqlServerVersion(new Version(8, 0, 29));
 
-if(builder.Environment.IsDevelopment())
+if (builder.Environment.IsDevelopment())
 {
     builder.Services.AddDbContext<ITUMiniTwitDBContext>(options => options.UseSqlite(connectionString));
 }
 else if (connectionString != null)
 {
-     builder.Services.AddDbContext<ITUMiniTwitDBContext>(options => options.UseMySql(connectionString, serverVersion));
+    builder.Services.AddDbContext<ITUMiniTwitDBContext>(options => options.UseMySql(connectionString, serverVersion));
 }
 else
 {
     throw new Exception("Connectionstring is null");
 }
 
-builder.Services.AddDefaultIdentity<Author>(options => {
+builder.Services.AddDefaultIdentity<Author>(options =>
+{
     options.SignIn.RequireConfirmedAccount = false;
 
     // Relax password policy for simulator
@@ -48,7 +49,8 @@ builder.Services.AddDefaultIdentity<Author>(options => {
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequiredLength = 1;
     options.User.AllowedUserNameCharacters =
-        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 -_.'";}
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 -_.'";
+}
     )
     .AddEntityFrameworkStores<ITUMiniTwitDBContext>();
 builder.Services

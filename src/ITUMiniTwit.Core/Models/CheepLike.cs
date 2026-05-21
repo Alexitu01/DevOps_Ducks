@@ -1,4 +1,4 @@
-﻿namespace ITUMiniTwit.Core.Models;
+namespace ITUMiniTwit.Core.Models;
 
 public class CheepLike
 {

@@ -18,8 +18,8 @@ using Microsoft.AspNetCore.Routing;
 namespace ITUMiniTwit.Web.Tests;
 
 public class PublicModelTests
-{ 
-    
+{
+
     private sealed class StubCheepService : ICheepService
     {
         public List<CheepDto>? NextGetCheepsResult { get; set; }
@@ -44,7 +44,7 @@ public class PublicModelTests
             LastSize = pageSize;
             return NextGetCheepsFromAuthorResult ?? new List<CheepDto>();
         }
-        
+
         public string? LastAddCheepAuthor { get; private set; }
         public string? LastAddCheepText { get; private set; }
 
@@ -53,7 +53,7 @@ public class PublicModelTests
             LastAddCheepAuthor = authorUserName;
             LastAddCheepText = text;
         }
-        
+
         public void LikeCheep(string authorUserName, int cheepId)
         {
             // Do something
@@ -101,11 +101,11 @@ public class PublicModelTests
         public List<Author>? NextGetFollowingResult { get; set; }
         public List<Author>? NextGetFollowersResult { get; set; }
     }
-    
+
     private static PublicModel CreateModelWithUser(StubCheepService stub, StubAuthorService authorStub, bool authenticated,
         string? userName = "alice")
     {
-        var model = new PublicModel(stub,authorStub);
+        var model = new PublicModel(stub, authorStub);
 
         var identity = new ClaimsIdentity();
         if (authenticated)
@@ -125,9 +125,9 @@ public class PublicModelTests
         {
             User = principal
         };
-        
+
         var actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
-        
+
         var modelState = new ModelStateDictionary();
 
         var viewData = new ViewDataDictionary(
@@ -141,10 +141,10 @@ public class PublicModelTests
         };
 
         model.PageContext = pageContext;
-        
+
         return model;
     }
-    
+
     // -----------------------
     // OnGet tests
     // -----------------------
@@ -174,7 +174,7 @@ public class PublicModelTests
         Assert.Null(stub.LastAuthor);
         Assert.Equal(1, model.ViewData["CurrentPage"]);
     }
-    
+
     [Theory]
     [InlineData(1)]
     [InlineData(4)]
@@ -196,7 +196,7 @@ public class PublicModelTests
         Assert.Equal(32, cheepStub.LastSize);
         Assert.Equal(page, model.ViewData["CurrentPage"]);
     }
-    
+
     [Fact]
     public void OnGet_PageNumber_Fallback_IsUsed_WhenPageIsNull()
     {
@@ -214,7 +214,7 @@ public class PublicModelTests
         Assert.Equal(32, cheepStub.LastSize);
         Assert.Equal(5, model.ViewData["CurrentPage"]);
     }
-    
+
     [Fact]
     public void OnGet_AuthenticatedUser_LoadsFollowing()
     {
@@ -243,7 +243,7 @@ public class PublicModelTests
     // -----------------------
     // OnPost tests
     // -----------------------
-    
+
     [Fact]
     public void OnPost_UnauthenticatedUser_ReturnsUnauthorized_AndDoesNotCallService()
     {
@@ -370,7 +370,7 @@ public class PublicModelTests
         Assert.Equal("alice", cheepStub.LastAddCheepAuthor);
         Assert.Equal("test cheep", cheepStub.LastAddCheepText);
     }
-    
+
     [Fact]
     public void OnPost_InvalidText_WhenAuthenticated_ReloadsCheeps_AndFollowing()
     {
@@ -404,76 +404,76 @@ public class PublicModelTests
         Assert.Single(model.Following);
         Assert.Equal("bob", model.Following[0].UserName);
     }
-    
+
     [Fact]
-public void OnPostFollow_UnauthenticatedUser_ReturnsUnauthorized()
-{
-    // Arrange
-    var cheepStub = new StubCheepService();
-    var authorStub = new StubAuthorService();
-    var model = CreateModelWithUser(cheepStub, authorStub, authenticated: false, userName: null);
+    public void OnPostFollow_UnauthenticatedUser_ReturnsUnauthorized()
+    {
+        // Arrange
+        var cheepStub = new StubCheepService();
+        var authorStub = new StubAuthorService();
+        var model = CreateModelWithUser(cheepStub, authorStub, authenticated: false, userName: null);
 
-    // Act
-    var result = model.OnPostFollow(authorToFollow: "bob", page: 2);
+        // Act
+        var result = model.OnPostFollow(authorToFollow: "bob", page: 2);
 
-    // Assert
-    Assert.IsType<UnauthorizedResult>(result);
-    Assert.Null(authorStub.LastFollowFollower);
-    Assert.Null(authorStub.LastFollowFollowee);
-}
+        // Assert
+        Assert.IsType<UnauthorizedResult>(result);
+        Assert.Null(authorStub.LastFollowFollower);
+        Assert.Null(authorStub.LastFollowFollowee);
+    }
 
-[Fact]
-public void OnPostFollow_AuthenticatedUser_CallsAuthorServiceAndRedirects()
-{
-    // Arrange
-    var cheepStub = new StubCheepService();
-    var authorStub = new StubAuthorService();
-    var model = CreateModelWithUser(cheepStub, authorStub, authenticated: true, userName: "alice");
+    [Fact]
+    public void OnPostFollow_AuthenticatedUser_CallsAuthorServiceAndRedirects()
+    {
+        // Arrange
+        var cheepStub = new StubCheepService();
+        var authorStub = new StubAuthorService();
+        var model = CreateModelWithUser(cheepStub, authorStub, authenticated: true, userName: "alice");
 
-    // Act
-    var result = model.OnPostFollow(authorToFollow: "bob", page: 3);
+        // Act
+        var result = model.OnPostFollow(authorToFollow: "bob", page: 3);
 
-    // Assert
-    var redirect = Assert.IsType<RedirectResult>(result);
-    Assert.Equal("?page=3", redirect.Url);
+        // Assert
+        var redirect = Assert.IsType<RedirectResult>(result);
+        Assert.Equal("?page=3", redirect.Url);
 
-    Assert.Equal("alice", authorStub.LastFollowFollower);
-    Assert.Equal("bob", authorStub.LastFollowFollowee);
-}
+        Assert.Equal("alice", authorStub.LastFollowFollower);
+        Assert.Equal("bob", authorStub.LastFollowFollowee);
+    }
 
-[Fact]
-public void OnPostUnfollow_UnauthenticatedUser_ReturnsUnauthorized()
-{
-    // Arrange
-    var cheepStub = new StubCheepService();
-    var authorStub = new StubAuthorService();
-    var model = CreateModelWithUser(cheepStub, authorStub, authenticated: false, userName: null);
+    [Fact]
+    public void OnPostUnfollow_UnauthenticatedUser_ReturnsUnauthorized()
+    {
+        // Arrange
+        var cheepStub = new StubCheepService();
+        var authorStub = new StubAuthorService();
+        var model = CreateModelWithUser(cheepStub, authorStub, authenticated: false, userName: null);
 
-    // Act
-    var result = model.OnPostUnfollow(authorToUnfollow: "bob", page: 2);
+        // Act
+        var result = model.OnPostUnfollow(authorToUnfollow: "bob", page: 2);
 
-    // Assert
-    Assert.IsType<UnauthorizedResult>(result);
-    Assert.Null(authorStub.LastUnfollowFollower);
-    Assert.Null(authorStub.LastUnfollowFollowee);
-}
+        // Assert
+        Assert.IsType<UnauthorizedResult>(result);
+        Assert.Null(authorStub.LastUnfollowFollower);
+        Assert.Null(authorStub.LastUnfollowFollowee);
+    }
 
-[Fact]
-public void OnPostUnfollow_AuthenticatedUser_CallsAuthorServiceAndRedirects()
-{
-    // Arrange
-    var cheepStub = new StubCheepService();
-    var authorStub = new StubAuthorService();
-    var model = CreateModelWithUser(cheepStub, authorStub, authenticated: true, userName: "alice");
+    [Fact]
+    public void OnPostUnfollow_AuthenticatedUser_CallsAuthorServiceAndRedirects()
+    {
+        // Arrange
+        var cheepStub = new StubCheepService();
+        var authorStub = new StubAuthorService();
+        var model = CreateModelWithUser(cheepStub, authorStub, authenticated: true, userName: "alice");
 
-    // Act
-    var result = model.OnPostUnfollow(authorToUnfollow: "bob", page: 4);
+        // Act
+        var result = model.OnPostUnfollow(authorToUnfollow: "bob", page: 4);
 
-    // Assert
-    var redirect = Assert.IsType<RedirectResult>(result);
-    Assert.Equal("?page=4", redirect.Url);
+        // Assert
+        var redirect = Assert.IsType<RedirectResult>(result);
+        Assert.Equal("?page=4", redirect.Url);
 
-    Assert.Equal("alice", authorStub.LastUnfollowFollower);
-    Assert.Equal("bob", authorStub.LastUnfollowFollowee);
-}
+        Assert.Equal("alice", authorStub.LastUnfollowFollower);
+        Assert.Equal("bob", authorStub.LastUnfollowFollowee);
+    }
 }

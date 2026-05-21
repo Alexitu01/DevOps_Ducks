@@ -26,9 +26,9 @@ namespace ITUMiniTwit.Web.Pages
         {
             if (_service is null)
                 throw new InvalidOperationException("PublicModel: _service is null in OnGet (unit test");
-            
+
             var safeAuthor = author ?? string.Empty;
-            
+
             int currentPage = page ?? pageNumber ?? 1;
             const int pageSize = 32;
             var loggedInUser = User?.Identity?.Name;
@@ -70,7 +70,7 @@ namespace ITUMiniTwit.Web.Pages
             ViewData["Author"] = author;
             return Page();
         }
-        public IActionResult OnPost(string author,[FromQuery] int? page = 1, int? pageNumber = null)
+        public IActionResult OnPost(string author, [FromQuery] int? page = 1, int? pageNumber = null)
         {
             int currentPage = page ?? pageNumber ?? 1;
             if (!(User?.Identity?.IsAuthenticated ?? false))
@@ -94,10 +94,10 @@ namespace ITUMiniTwit.Web.Pages
             }
 
             _service.AddCheep(author, trimmed);
-            
+
             return RedirectToPage("/UserTimeline", new { author = author, page = currentPage });
         }
-        
+
         public IActionResult OnPostFollow(string authorToFollow, string author, [FromQuery] int? page = 1, int? pageNumber = null)
         {
             if (!(User?.Identity?.IsAuthenticated ?? false))
@@ -109,7 +109,7 @@ namespace ITUMiniTwit.Web.Pages
             int currentPage = page ?? pageNumber ?? 1;
             return RedirectToPage("/UserTimeline", new { author = author, page = currentPage });
         }
-        
+
         public IActionResult OnPostUnfollow(string authorToUnfollow, string author, [FromQuery] int? page = 1, int? pageNumber = null)
         {
             if (!(User?.Identity?.IsAuthenticated ?? false))

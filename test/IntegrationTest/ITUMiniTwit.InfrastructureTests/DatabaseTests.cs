@@ -1,4 +1,4 @@
-﻿using Xunit;
+using Xunit;
 using Microsoft.Data.Sqlite;
 using ITUMiniTwit.Infrastructure;
 using ITUMiniTwit.Core.Models;
@@ -42,7 +42,7 @@ public class DatabaseTests : IDisposable
         // Arrange
         using var context = CreateContext();
         var cheepRepository = new CheepRepository(context);
-  
+
         // Act
         var list = cheepRepository.GetCheeps(1, 10);
 
@@ -69,7 +69,7 @@ public class DatabaseTests : IDisposable
     [Fact]
     public void AuthorRepository_Can_GetAuthorByEmail()
     {
-        
+
         // Arrange
         using var context = CreateContext();
         var authorRepository = new AuthorRepository(context);
@@ -117,7 +117,7 @@ public class DatabaseTests : IDisposable
         var cheeps = cheepRepository.GetCheeps(1, 10);
 
         //Assert
-        Assert.Contains(cheeps, c=> c.Text == "New Cheep" && c.Author == "Bob");
+        Assert.Contains(cheeps, c => c.Text == "New Cheep" && c.Author == "Bob");
         Assert.Equal(3, cheeps.Count);
     }
 }

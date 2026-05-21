@@ -7,7 +7,7 @@ namespace ITUMiniTwit.Infrastructure.ITUMiniTwit.Service
     public class CheepService : ICheepService
     {
         private readonly ICheepRepository _cheepRepository;
-        
+
 
         public CheepService(ICheepRepository cheepRepository)
         {
@@ -24,7 +24,7 @@ namespace ITUMiniTwit.Infrastructure.ITUMiniTwit.Service
         {
             return _cheepRepository.GetCheepsFromAuthor(author, page, pageSize);
         }
-        
+
         public void AddCheep(string authorUserName, string text)
         {
             _cheepRepository.AddCheep(new CheepDto
@@ -33,12 +33,12 @@ namespace ITUMiniTwit.Infrastructure.ITUMiniTwit.Service
                 Text = text
             });
         }
-        
+
         public void LikeCheep(string authorUserName, int cheepId)
         {
             _cheepRepository.LikeCheep(authorUserName, cheepId);
         }
 
     }
-    
+
 }

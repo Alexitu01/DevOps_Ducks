@@ -1,0 +1,11 @@
+name: Convert report to pdf
+
+on:
+  push: [ main ]
+  workflow_dispatch:
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+    steps:
+

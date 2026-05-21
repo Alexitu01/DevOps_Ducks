@@ -25,7 +25,7 @@ namespace ITUMiniTwit.Core.Tests
             _context = new ITUMiniTwitDBContext(options);
             _authorRepository = new AuthorRepository(_context);
             _cheepRepository = new CheepRepository(_context);
-            _authorRepository.AddAuthor("Daid","daid@email.dk");
+            _authorRepository.AddAuthor("Daid", "daid@email.dk");
         }
 
         [Fact]

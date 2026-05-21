@@ -41,17 +41,17 @@ namespace ITUMiniTwit.Web.Areas.Identity.Pages.Account
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
-            
+
             var userCheeps = _context.Cheeps.Where(c => c.AuthorId == user.Id);
             _context.Cheeps.RemoveRange(userCheeps);
             await _context.SaveChangesAsync();
-            
+
             var result = await _userManager.DeleteAsync(user);
             if (!result.Succeeded)
             {
                 throw new InvalidOperationException($"Unexpected error occurred deleting user.");
             }
-            
+
             await _signInManager.SignOutAsync();
             return Redirect("~/");
         }
