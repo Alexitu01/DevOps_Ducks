@@ -21,7 +21,7 @@ jobs:
           build_html: false
 
       - name: Upload pdf
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v7
         with:
           name: BSc_group_a.pdf
           path: report/build 
