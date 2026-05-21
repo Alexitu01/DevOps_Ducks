@@ -3,6 +3,13 @@ name: scp files to VMs
 on:
   workflow_dispatch:
   workflow_call:
+    inputs:
+      host1:
+        required: true
+        type: string
+      host2:
+        required: true
+        type: string
 
 jobs:
   scp-files:
@@ -11,48 +18,47 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Upload docker-compose
         uses: appleboy/scp-action@v1
         with:
-          host: ${{ secrets.SSH_HOST1 }},${{ secrets.SSH_HOST2 }}
+          host: ${{ inputs.host1 }},${{ inputs.host2 }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           source: docker-compose.yml
           target: /root
-      
+
       - name: Upload prometheus.yml file
         uses: appleboy/scp-action@v1
         with:
-          host: ${{ secrets.SSH_HOST1 }},${{ secrets.SSH_HOST2 }}
+          host: ${{ inputs.host1 }},${{ inputs.host2 }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           source: Moniter/Prometheus/prometheus.yml
           target: /root
-        
+
       - name: Upload config.alloy file
         uses: appleboy/scp-action@v1
         with:
-          host: ${{ secrets.SSH_HOST1 }},${{ secrets.SSH_HOST2 }}
+          host: ${{ inputs.host1 }},${{ inputs.host2 }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           source: alloy/config.alloy
           target: /root
-      
+
       - name: Upload loki-config.yml file
         uses: appleboy/scp-action@v1
         with:
-          host: ${{ secrets.SSH_HOST1 }}, ${{ secrets.SSH_HOST2 }}
+          host: ${{ inputs.host1 }},${{ inputs.host2 }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           source: loki/loki-config.yml
           target: /root
-          
-        # Creating .env file via SSH to VM in order to use environment variables for database etc.
+
       - name: Create .env file vm1
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ secrets.SSH_HOST1 }}
+          host: ${{ inputs.host1 }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
@@ -69,7 +75,7 @@ jobs:
       - name: Create .env file vm2
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ secrets.SSH_HOST2 }}
+          host: ${{ inputs.host2 }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
@@ -82,11 +88,11 @@ jobs:
             MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}
             DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
             EOF
-        
+
       - name: Upload deploy.sh
         uses: appleboy/scp-action@v1
         with:
-          host: ${{ secrets.SSH_HOST1 }},${{ secrets.SSH_HOST2 }}
+          host: ${{ inputs.host1 }},${{ inputs.host2 }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           source: scripts/deploy.sh
@@ -95,7 +101,7 @@ jobs:
       - name: Upload nginx config
         uses: appleboy/scp-action@v1
         with:
-          host: ${{ secrets.SSH_HOST1 }},${{ secrets.SSH_HOST2 }}
+          host: ${{ inputs.host1 }},${{ inputs.host2 }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           source: nginx/devopsducks.studio
@@ -104,7 +110,7 @@ jobs:
       - name: Install nginx config
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ secrets.SSH_HOST1 }},${{ secrets.SSH_HOST2 }}
+          host: ${{ inputs.host1 }},${{ inputs.host2 }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
