@@ -22,5 +22,5 @@ jobs:
       - name: Upload pdf
         uses: actions/upload-artifact@v3
         with:
-          name: report.pdf
+          name: BSc_group_a.pdf
           path: report/build 
