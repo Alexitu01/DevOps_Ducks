@@ -51,9 +51,13 @@ When the branch has been pushed to GitHub, create a pull request, wait for the w
 ![IaC Demo](Images/IaC-Demo.gif)
 
 ### CI/CD Pipeline
+#### Part 1
 ![CI/CD Demo Part 1](Images/CICD_demo-part1.gif)
+#### Part 2
 ![CI/CD Demo Part 2](Images/CICD_demo-part2.gif)
+#### Part 3
 ![CI/CD Demo Part 3](Images/CICD_demo-part3.gif)
+#### Part 4
 ![CI/CD Demo Part 4](Images/CICD_demo-part4.gif)
 
 ## Legacy branch
