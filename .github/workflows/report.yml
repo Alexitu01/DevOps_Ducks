@@ -17,11 +17,11 @@ jobs:
         with:
           input_path: report/report.md
           output_dir: report/build
-          images_dir: report/images
+          images_dir: report/Images
           build_html: false
 
       - name: Upload pdf
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
-          name: BSc_group_a.pdf
+          name: report
           path: report/build/BSc_group_a.pdf
