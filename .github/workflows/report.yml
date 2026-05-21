@@ -32,17 +32,17 @@ jobs:
             fi
 
       - name: Upload report artifact
-            if: env.report_built == 'true'
-            uses: actions/upload-artifact@v4
-            with:
+        if: env.report_built == 'true'
+        uses: actions/upload-artifact@v4
+        with:
               name: report-pdf
               path: report/build/BSc_group_a.pdf
 
       - name: Commit report PDF
-            if: env.report_built == 'true'
-            run: |
-              git config user.name "github-actions"
-              git config user.email "github-actions@github.com"
-              git add report/build/BSc_group_a.pdf
-              git diff --cached --quiet || git commit -m "Build report PDF [skip ci]"
-              git push
+        if: env.report_built == 'true'
+        run: |
+            git config user.name "github-actions"
+            git config user.email "github-actions@github.com"
+            git add report/build/BSc_group_a.pdf
+            git diff --cached --quiet || git commit -m "Build report PDF [skip ci]"
+            git push
