@@ -20,8 +20,11 @@ jobs:
           images_dir: report/Images
           build_html: false
 
-      - name: Upload pdf
-        uses: actions/upload-artifact@v4
-        with:
-          name: report
-          path: report/build/BSc_group_a.pdf
+      - name: Rename and commit PDF
+        run: |
+          mv report/build/report.pdf report/build/BSc_group_a.pdf
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add report/build/BSc_group_a.pdf
+          git diff --cached --quiet || git commit -m "Generate report PDF"
+          git push
