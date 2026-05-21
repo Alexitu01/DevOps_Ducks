@@ -23,8 +23,20 @@ builder.Services.AddScoped<IAuthorService, AuthorService>();
 builder.Services.AddSingleton<ILoginMetrics, LoginMetrics>();
 
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var serverVersion = new MySqlServerVersion(new Version(8, 0, 29));
 
-builder.Services.AddDbContext<ITUMiniTwitDBContext>(options => options.UseSqlite(connectionString));
+if(builder.Environment.IsDevelopment())
+{
+    builder.Services.AddDbContext<ITUMiniTwitDBContext>(options => options.UseSqlite(connectionString));
+}
+else if (connectionString != null)
+{
+     builder.Services.AddDbContext<ITUMiniTwitDBContext>(options => options.UseMySql(connectionString, serverVersion));
+}
+else
+{
+    throw new Exception("Connectionstring is null");
+}
 
 builder.Services.AddDefaultIdentity<Author>(options => {
     options.SignIn.RequireConfirmedAccount = false;
